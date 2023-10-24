@@ -18,9 +18,10 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final email = emailController.text;
       final password = passwordController.text;
-      final user = await _authService.signInWithEmailAndPassword(email, password);
+      final user =
+          await _authService.signInWithEmailAndPassword(email, password);
       if (user != null) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/rootPage');
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstants.appImageColor,
+      backgroundColor: ColorConstants.pandaGreen,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -43,7 +44,10 @@ class _LoginPageState extends State<LoginPage> {
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: ColorConstants.black,),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: ColorConstants.pandaBlack,
+                    ),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -71,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               const CircleAvatar(
                 backgroundImage: AssetImage('assets/images/app_icon_green.png'),
-                backgroundColor: Color(0xFFBADCAD),
+                backgroundColor: ColorConstants.pandaGreen,
                 radius: 90.0,
               ),
               const SizedBox(height: 32.0),
@@ -103,7 +107,8 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: _login,
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

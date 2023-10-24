@@ -40,7 +40,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstants.appImageColor,
+      backgroundColor: ColorConstants.pandaGreen,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Center(
@@ -68,7 +68,7 @@ class _AuthPageState extends State<AuthPage> {
               const SizedBox(height: 20),
               const CircleAvatar(
                 backgroundImage: AssetImage('assets/images/app_icon_green.png'),
-                backgroundColor: Color(0xFFBADCAD),
+                backgroundColor: ColorConstants.pandaGreen,
                 radius: 90.0, // アイコンのサイズを調整するための半径
               ),
               const SizedBox(height: 40),

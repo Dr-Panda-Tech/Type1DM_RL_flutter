@@ -62,7 +62,7 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                 },
                 icon: Icons.alarm,
               ),
-            const Spacer(),
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
                 if (widget.fromSettings) {
@@ -113,11 +113,11 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                 value: value,
                 hint: const Text('選択', style: TextStyle(color: Colors.grey, fontSize: 16)),
                 onChanged: onChanged,
-                icon: Icon(Icons.arrow_drop_down, color: ColorConstants.accentColor),
+                icon: const Icon(Icons.arrow_drop_down, color: ColorConstants.accentColor),
                 items: items.map((item) {
                   return DropdownMenuItem<String>(
                     value: item,
-                    child: Text(item, style: const TextStyle(fontSize: 16, color: Colors.black)),
+                    child: Text(item, style: const TextStyle(fontSize: 16, color: ColorConstants.appBarColor)),
                   );
                 }).toList(),
               ),

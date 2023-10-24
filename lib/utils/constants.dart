@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
 class ColorConstants {
-  static Color appBarColor = const Color(0xFF4A67AD);
-  static Color backgroundColor = const Color(0xFFF2F2F7);
-  static Color appImageColor = const Color(0xFFBADCAD);
-  static Color accentColor = const Color(0xFF396122);
-  static Color settingsListBackground = const Color(0xFFF2F2F7);
-  static Color settingsSectionBackground = Colors.white;
-  static Color yellow = Colors.yellow;
-  static Color lightBlue = Colors.lightBlue;
-  static Color blue = Colors.blue;
-  static Color grey = Colors.grey;
-  static Color black = Colors.black;
-  static Color white = Colors.white;
-  static Color red = Colors.red;
+  static const Color appBarColor = Color(0xFF3E3E3E);
+  static const Color backgroundColor = Color(0xFFF2F2F7);
+  static const Color pandaGreen = Color(0xFFD0F0C0);
+  static const Color pandaBlack = Color(0xFF3E3E3E);
+  static const Color accentColor = Color(0xFF396122);
+  static const Color settingsListBackground = Color(0xFFF2F2F7);
+  static const Color settingsSectionBackground = Colors.white;
+  static const Color yellow = Colors.yellow;
+  static const Color lightBlue = Colors.lightBlue;
+  static const Color blue = Colors.blue;
+  static const Color grey = Colors.grey;
+  static const Color black = Colors.black;
+  static const Color white = Colors.white;
+  static const Color red = Colors.red;
 }
 
 final elevatedButtonStyle = ElevatedButton.styleFrom(
