@@ -19,7 +19,7 @@ class GraphPageState extends State<GraphPage> {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     String userId = _auth.currentUser!.uid;
     QuerySnapshot querySnapshot =
-        await users.where('userId', isEqualTo: userId).get();
+    await users.where('userId', isEqualTo: userId).get();
 
     for (var doc in querySnapshot.docs) {
       dataList.add(doc.data() as Map<String, dynamic>);
@@ -30,7 +30,7 @@ class GraphPageState extends State<GraphPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('グラフページ')),
+      backgroundColor: ColorConstants.backgroundColor,
       body: FutureBuilder(
         future: fetchData(),
         builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {

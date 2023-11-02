@@ -38,11 +38,21 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   firebase_core: ^2.17.0
   firebase_auth: ^4.10.1
+  firebase_storage: ^11.4.1
   cloud_firestore: ^4.9.3
+  image_picker: ^1.0.4
   google_sign_in: ^6.1.5
+  sign_in_with_apple: ^5.0.0
   flutter_facebook_auth: ^6.0.2
+  flutter_signin_button: ^2.0.0
   fl_chart: ^0.64.0
   logging: ^1.0.0
+  http: ^1.1.0
+  flutter_html: ^3.0.0-beta.2
+  qr_flutter: ^4.1.0
+  flutter_svg: ^2.0.8
+  rive: ^0.12.1
+  intl: ^0.18.1
 #
 flutter_launcher_icons:
   android: true
@@ -71,6 +81,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/logos/
+    - assets/json/
+    - assets/RiveAssets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -87,6 +100,9 @@ flutter:
     - family: Sacramento
       fonts:
         - asset: assets/fonts/Sacramento/Sacramento-Regular.ttf
+    - family: NotoSansJP
+      fonts:
+        - asset: assets/fonts/NotoSansJP/NotoSansJP-Regular.ttf
     - family: Teko
       fonts:
          - asset: assets/fonts/Teko/Teko-Bold.ttf

@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "dalle_robot3.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "DALL·E 2023-10-30 15.57.19 - Tall vertical illustration designed for app background with user-friendly colors showcasing a robotic Caucasian female, standing on the right side, fa.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "DALL·E 2023-10-30 16.09.22 - Illustration of a type 1 diabetes patient with a futuristic, mechanical appearance using insulin. The setting is a high-tech medical room. The individ.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

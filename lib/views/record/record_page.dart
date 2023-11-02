@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:type1dm_rl_flutter/constants.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({super.key});
@@ -19,11 +18,10 @@ class _RecordPageState extends State<RecordPage> {
   String? _recommendation;
 
   Future<void> _saveData() async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     // 現在のユーザーのUIDを取得
-    String? userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId == null) {
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
       print("User is not logged in.");
       return;
     }
@@ -31,19 +29,19 @@ class _RecordPageState extends State<RecordPage> {
     // 現在の時刻をISO 8601形式の文字列として取得
     String currentTime = DateTime.now().toIso8601String();
 
-    return users
-        .add({
-      'userId': userId, // ユーザーIDを追加
+    final data = {
+      'userId': uid, // ユーザーIDを追加
+      'timestamp': currentTime,
       'mealCategory': mealCategory,
       'glucose': glucoseController.text,
-      'timestamp': currentTime,
-      'recommendation': _recommendation, // 推奨単位数を追加
-    })
-        .then((value) => print("Data Added"))
-        .catchError((error) => print("Failed to add data: $error"));
+      'recommendation': _recommendation, //
+    };
+
+    await FirebaseFirestore.instance
+        .collection('insulin')
+        .doc(uid)
+        .set(data);
   }
-
-
 
   String _getRecommendation() {
     // ここではダミーデータを返します
@@ -53,7 +51,7 @@ class _RecordPageState extends State<RecordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('メイン画面')),
+      backgroundColor: ColorConstants.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -100,13 +98,14 @@ class _RecordPageState extends State<RecordPage> {
                 setState(() {
                   _isLoading = true;
                 });
-                await Future.delayed(const Duration(seconds: 2));  // ダミーの遅延
+                await Future.delayed(const Duration(seconds: 2),);  // ダミーの遅延
                 _recommendation = _getRecommendation();
                 _saveData();
                 setState(() {
                   _isLoading = false;
                 });
               },
+              style: elevatedButtonStyle,
               child: const Text('単位数を計算する', style: kLargeButtonTextStyle,),
             ),
             const SizedBox(height: 20),

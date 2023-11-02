@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:type1dm_rl_flutter/constants.dart';
 
 class TermsOfServicePage extends StatelessWidget {
+
+  void _goBackToProfilePage(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed('/profilePage');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstants.backgroundColor,
       appBar: AppBar(
         title: Text('利用規約'),
       ),

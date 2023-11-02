@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/services/auth_service.dart';
-import 'package:type1dm_rl_flutter/utils/auth_button.dart';
+import 'package:type1dm_rl_flutter/utils/button/main_button.dart';
+import 'package:type1dm_rl_flutter/views/auth/sign_in_page.dart';
+import 'package:type1dm_rl_flutter/views/auth/sign_up_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -11,89 +12,100 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  final AuthService _authService = AuthService();
 
   void _handleSignup() {
-    Navigator.pushNamed(context, '/signUpPage');
+    customSignUpDialog(context, onClosed: (value) {
+      // Handle any actions when the dialog is closed, if needed
+    });
   }
 
-  void _handleLogin() async {
-    Navigator.pushNamed(context, '/loginPage');
-  }
-
-  void _handleGoogleLogin() async {
-    // Googleログイン処理...
-    var user = await _authService.signInWithGoogle();
-    if (user != null) {
-      if (mounted) {
-        // ウィジェットがまだマウントされているかを確認
-        Navigator.pushReplacementNamed(context, '/homePage');
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('ログインに失敗しました。')));
-      }
-    }
+  void _handleSignIn() async {
+    customSignInDialog(context, onClosed: (value) {
+      // Handle any actions when the dialog is closed, if needed
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstants.pandaGreen,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                '1型糖尿病のあなたに届ける\nインスリン調整アプリ', // '\n'を追加して改行
-                style: TextStyle(
-                  fontSize: 20, // フォントサイズを20に変更
-                  fontWeight: FontWeight.bold, // フォントを太く
+      backgroundColor: ColorConstants.backgroundColor,
+      body: Container(
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment(0, 0.05),
+              child: Image.asset(
+                'assets/images/dalle_robot3.png',
+                fit: BoxFit.contain,
+                width: 580.0,  // こちらを追加
+                height: 580.0, // こちらを追加
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  20.0, 100.0, 20.0, 20.0), // この行を変更: 上部の余白を50.0に設定
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '強化学習型インスリン調整アプリ', // '\n'を追加して改行
+                      style: KHeadTextStyle,
+                      textAlign: TextAlign.center, // テキストをセンター揃えに
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      'NovoSelf',
+                      style: KLogoTextStyle,
+                      textAlign: TextAlign.center, // テキストをセンター揃えに
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center, // テキストをセンター揃えに
               ),
-              const SizedBox(height: 15),
-              const Text(
-                'NovoSelf',
-                style: TextStyle(
-                  fontSize: 60, // フォントサイズを20に変更
-                  fontWeight: FontWeight.w900, // フォントを太く
-                  fontFamily: 'Sacramento',
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 65), // 下部の余白を調整
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Columnのサイズを最小限にする
+                  children: [
+                    buildButton(
+                      onPressed: _handleSignIn,
+                      text: 'Sign in',
+                      icon: Icons.login,
+                      color: ColorConstants.pandaBlack,
+                    ),
+                    const SizedBox(height: 10),
+                    const Row(
+                      children: [
+                        Expanded(
+                          child: Divider(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            "OR",
+                            style: kColorTextStyle,
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(),
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: _handleSignup,
+                      child: Text(
+                        'Sign up？',
+                        style: kUnderTextStyle,
+                      ),
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center, // テキストをセンター揃えに
               ),
-              const SizedBox(height: 20),
-              const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/app_icon_green.png'),
-                backgroundColor: ColorConstants.pandaGreen,
-                radius: 90.0, // アイコンのサイズを調整するための半径
-              ),
-              const SizedBox(height: 40),
-              buildButton(
-                onPressed: _handleSignup,
-                text: '新規登録',
-                icon: Icons.person_add,
-                color: Theme.of(context).primaryColor,
-              ),
-              const SizedBox(height: 20),
-              buildButton(
-                onPressed: _handleLogin,
-                text: 'ログイン',
-                icon: Icons.login,
-                color: ColorConstants.accentColor,
-              ),
-              const SizedBox(height: 20),
-              buildButton(
-                onPressed: _handleGoogleLogin,
-                text: 'Googleでログイン',
-                icon: Icons.lock_outline,
-                color: Colors.grey[700]!,
-              ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );

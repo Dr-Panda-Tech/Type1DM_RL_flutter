@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
+import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
+import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
 class InsulinSettingsPage extends StatefulWidget {
   final bool fromSettings;
@@ -11,6 +14,7 @@ class InsulinSettingsPage extends StatefulWidget {
 }
 
 class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
+  DateTime? dmDiagnosedDate;
   String? rapidInsulinType;
   String? longActingInsulinType;
   String? longActingInsulinTiming;
@@ -18,114 +22,94 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('インスリン設定')),
+      backgroundColor: ColorConstants.backgroundColor,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(36.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSelectionTile(
-              title: '即効型インスリン',
-              value: rapidInsulinType,
-              items: ['ノボラピッド', 'ヒューマリン'],
-              onChanged: (newValue) {
+            const SizedBox(height: 50),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                '次に糖尿病に関する情報を入力しましょう',
+                style: kHeader2TextStyle,
+              ),
+            ),
+            buildDateFieldWithIcon(
+              context: context,
+              label: "1型糖尿病と診断された年",
+              icon: Icons.calendar_today,
+              initialDate: DateTime(1980, 1, 1),
+              onDateChanged: (value) {
                 setState(() {
-                  rapidInsulinType = newValue;
+                  dmDiagnosedDate = value;
                 });
               },
+            ),
+            buildSelectFieldWithIcon(
+              label: "速効型インスリン",
               icon: Icons.flash_on,
+              options: ['ノボラピッド', 'ヒューマリン'],
+              onValueChanged: (value) {
+                setState(() {
+                  rapidInsulinType = value;
+                });
+              },
             ),
             const SizedBox(height: 32),
-            _buildSelectionTile(
-              title: '時効型インスリン',
-              value: longActingInsulinType,
-              items: ['未使用', 'グラルギン', 'トレシーバ'],
-              onChanged: (newValue) {
+            buildSelectFieldWithIcon(
+              label: "時効型インスリン",
+              icon: Icons.access_time,
+              options: ['未使用', 'グラルギン', 'トレシーバ'],
+              onValueChanged: (value) {
                 setState(() {
-                  longActingInsulinType = newValue;
-                  if (newValue == '未使用' || newValue == null) {
+                  longActingInsulinType = value;
+                  if (value == '未使用' || value == null) {
                     longActingInsulinTiming = null;
                   }
                 });
               },
-              icon: Icons.access_time,
             ),
             const SizedBox(height: 32),
             if (longActingInsulinType != null && longActingInsulinType != '未使用')
-              _buildSelectionTile(
-                title: '時効型インスリンの摂取タイミング',
-                value: longActingInsulinTiming,
-                items: ['朝', '眠前'],
-                onChanged: (newValue) {
+              buildSelectFieldWithIcon(
+                label: "時効型インスリンの使用タイミング",
+                icon: Icons.alarm,
+                options: ['朝', '眠前'],
+                onValueChanged: (value) {
                   setState(() {
-                    longActingInsulinTiming = newValue;
+                    longActingInsulinTiming = value;
                   });
                 },
-                icon: Icons.alarm,
               ),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                if (widget.fromSettings) {
-                  Navigator.pop(context);
+            twinButton(
+              leftOnPressed: () async {
+                Navigator.pop(context);
+              },
+              leftText: '戻る',
+              rightOnPressed: () async {
+                if (rapidInsulinType != null && longActingInsulinType != null) {
+                  await saveInsulinTypeFirestore(
+                    rapidInsulinType: rapidInsulinType!,
+                    longActingInsulinType: longActingInsulinType!,
+                    longActingInsulinTiming: longActingInsulinTiming,
+                  );
+                  Navigator.pushNamed(context, '/primaryCareSettingsPage');
                 } else {
-                  Navigator.pushReplacementNamed(context, '/loginPage');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('全ての情報を入力してください。'),
+                    ),
+                  );
                 }
               },
-              style: elevatedButtonStyle,
-              child: const Text('登録完了'),
+              rightText: '次へ',
             ),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildSelectionTile({
-    required String title,
-    required String? value,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
-    required IconData icon,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: ColorConstants.accentColor, size: 24),
-              const SizedBox(width: 12),
-              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: ColorConstants.accentColor, width: 1.5),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: value,
-                hint: const Text('選択', style: TextStyle(color: Colors.grey, fontSize: 16)),
-                onChanged: onChanged,
-                icon: const Icon(Icons.arrow_drop_down, color: ColorConstants.accentColor),
-                items: items.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item, style: const TextStyle(fontSize: 16, color: ColorConstants.appBarColor)),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
-

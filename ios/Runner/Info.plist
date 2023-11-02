@@ -14,6 +14,27 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<!-- Apple Sign InのリダイレクトURIを追加 -->
+        <key>CFBundleURLTypes</key>
+        <array>
+          <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>com.junjun.type1dmRlFlutter</string>
+            </array>
+          </dict>
+          <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>com.junjun.type1dmRlFlutter</string> <!-- Apple Sign In Redirect URI -->
+            </array>
+          </dict>
+        </array>
+        <!-- Apple Sign In使用の目的を追加 -->
+            <key>NSAppleSignInUsageDescription</key>
+            <string>Sign in with your Apple ID to access your account.</string>
 	<key>CFBundleName</key>
 	<string>type1dm_rl_flutter</string>
 	<key>CFBundlePackageType</key>
@@ -24,10 +45,16 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -45,11 +72,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIBackgroundModes</key>
-    <array>
-      <string>remote-notification</string>
-    </array>
-    <key>FirebaseAppDelegateProxyEnabled</key>
-    <true/>
 </dict>
 </plist>
