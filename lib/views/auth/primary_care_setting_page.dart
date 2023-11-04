@@ -17,6 +17,7 @@ class PrimaryCareSettingsPage extends StatefulWidget {
 }
 
 class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
+  bool isLoading = true; // 初期状態ではローディング中とみなします
   Map<String, dynamic>? clinicMaster;
   Map<String, dynamic>? hospitalMaster;
 
@@ -24,7 +25,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
   String? selectedPrefecture;
   String? selectedDistrict;
   String? selectedFacility;
-  String? selectedFacilityId;  // これを追加
+  String? selectedFacilityId; // これを追加
 
   @override
   void initState() {
@@ -34,13 +35,14 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
 
   void loadJsonData() async {
     String clinicData =
-        await rootBundle.loadString('assets/json/clinicMaster.json');
+    await rootBundle.loadString('assets/json/clinicMaster.json');
     String hospitalData =
-        await rootBundle.loadString('assets/json/hospitalMaster.json');
+    await rootBundle.loadString('assets/json/hospitalMaster.json');
 
     setState(() {
       clinicMaster = json.decode(clinicData);
       hospitalMaster = json.decode(hospitalData);
+      isLoading = false; // データがロードされたので、ローディングを終了する
     });
   }
 
@@ -54,6 +56,13 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(), // ローディングインジケータを表示
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
       body: Padding(
@@ -101,7 +110,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                 buildSelectFieldWithIcon(
                   label: "地区を選択",
                   icon: Icons.map,
-                  options:getMasterData()[selectedPrefecture!].keys.toList(),
+                  options: getMasterData()[selectedPrefecture!].keys.toList(),
                   onValueChanged: (value) {
                     setState(() {
                       selectedDistrict = value;
@@ -115,16 +124,16 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                     label: "施設名を選択",
                     icon: Icons.local_hospital,
                     options: getMasterData()[selectedPrefecture!]
-                            [selectedDistrict!]
-                        .map((e) => e["name"] as String)
+                    [selectedDistrict!]
+                        .map<String>((e) => e["name"] as String)
                         .toList(),
                     onValueChanged: (value) {
-                      var selectedFacility = getMasterData()[selectedPrefecture!][selectedDistrict!].firstWhere(
-                              (e) => e["name"] == value
-                      );
+                      var facilityData = getMasterData()[selectedPrefecture!]
+                      [selectedDistrict!]
+                          .firstWhere((e) => e["name"] == value);
                       setState(() {
-                        selectedFacility = value;
-                        selectedFacilityId = selectedFacility["id"];  // ここでIDを設定
+                        selectedFacility = value; // 選択された施設の名前を保存
+                        selectedFacilityId = facilityData["id"]; // ここでIDを設定
                       });
                     },
                     selectedValue: selectedFacility,
@@ -139,9 +148,10 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
               },
               leftText: '戻る',
               rightOnPressed: () async {
-                if (selectedFacilityId != null) {  // selectedFacilityIdを確認
+                if (selectedFacilityId != null) {
+                  // selectedFacilityIdを確認
                   await savePrimaryCareFirestore(
-                    selectedFacilityId: selectedFacilityId!,  // IDを関数に渡す
+                    selectedFacilityId: selectedFacilityId!, // IDを関数に渡す
                   );
                   Navigator.pushReplacementNamed(context, '/authPage');
                 } else {
