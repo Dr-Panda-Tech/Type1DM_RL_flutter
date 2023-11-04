@@ -28,6 +28,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: ColorConstants.backgroundColor,
       body: Container(
         child: Stack(
