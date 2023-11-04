@@ -116,7 +116,7 @@ class _SignInFormState extends State<SignInForm> {
                     return null;
                   },
                   onSaved: (password) {},
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
