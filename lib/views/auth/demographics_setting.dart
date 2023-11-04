@@ -17,9 +17,15 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
   TextEditingController userNameController = TextEditingController();
   String? gender;
   DateTime? birthDate;
+  final ValueNotifier<DateTime> birthDateNotifier = ValueNotifier<DateTime>(DateTime.now());
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
 
+  @override
+  void dispose() {
+    birthDateNotifier.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +53,7 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
               const SizedBox(height: 10),
               buildSelectFieldWithIcon(
                 label: "性別を選択",
-                icon: Icons.arrow_drop_down,
+                icon: Icons.male,
                 options: ["男性", "女性"],
                 selectedValue: gender,
                 onValueChanged: (value) {
@@ -57,7 +63,7 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                   });
                 },
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 10),
               buildDateFieldWithIcon(
                 context: context,
                 label: "生年月日",
@@ -68,9 +74,11 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                     birthDate = value;
                   });
                 },
+                selectedDateNotifier: birthDateNotifier, // ここでValueNotifierを渡します
               ),
-              const SizedBox(height: 15),
-              buildNumberFieldWithIcon(
+              const SizedBox(height: 10),
+              CustomFormWidgets.buildNumberFieldWithIcon(
+                context: context,
                 controller: heightController,
                 label: "身長",
                 icon: Icons.height,
@@ -78,9 +86,11 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                 placeholder: "例：160.5",
                 unit: "cm",
                 allowDecimal: true, // <- 小数点を許可します。
+                decimal: 1, // 小数点以下1桁までを許容
               ),
-              const SizedBox(height: 15),
-              buildNumberFieldWithIcon(
+              const SizedBox(height: 10),
+              CustomFormWidgets.buildNumberFieldWithIcon(
+                context: context,
                 controller: weightController,
                 label: "体重",
                 icon: Icons.scale,
@@ -88,6 +98,7 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                 placeholder: "例：60.5",
                 unit: "kg",
                 allowDecimal: true, // <- 小数点を許可します。
+                decimal: 1, // 小数点以下2桁までを許容
               ),
               const SizedBox(height: 30),
               twinButton(
@@ -106,10 +117,10 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                       username: userNameController.text,
                       gender: gender,
                       birthDate: birthDate,
-                      height: int.parse(heightController.text),
+                      height: double.parse(heightController.text),
                       weight: double.parse(weightController.text),
                     );
-                    Navigator.pushNamed(context, '/UserImageSettingPage');
+                    Navigator.pushNamed(context, '/insulinSettingsPage');
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

@@ -2,24 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 
 class UserGuidePage extends StatelessWidget {
+  void _goBackToProfilePage(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed('/profilePage');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('ユーザーガイド'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.only(
+                  top: 40, // ボタンの位置を調整するための余白を追加
+                  left: 20,
+                ),
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back), // 戻るボタンのアイコン
+                  onPressed: () {
+                    _goBackToProfilePage(context);// 前のページに戻る
+                  },
+                ),
+              ),
               Text(
                 'アプリの使い方',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: kHeader1TextStyle,
               ),
               SizedBox(height: 16),
               Text(

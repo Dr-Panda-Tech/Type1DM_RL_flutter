@@ -83,7 +83,7 @@ Future<Object?> customSignUpDialog(BuildContext context,
                       await authFunction.signInWithGoogle();
                     },
                   ),
-                  SizedBox(height: 8.0),
+                  SizedBox(height: 5.0),
                   SignInButton(
                     Buttons.Apple,
                     text: "Continue with Apple",

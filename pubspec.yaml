@@ -53,12 +53,12 @@ dependencies:
   flutter_svg: ^2.0.8
   rive: ^0.12.1
   intl: ^0.18.1
-#
+  keyboard_actions: ^4.2.0
+
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/app_icon_green.png"
-
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

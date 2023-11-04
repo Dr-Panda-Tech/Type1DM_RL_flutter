@@ -14,6 +14,10 @@ class InsulinSettingsPage extends StatefulWidget {
 }
 
 class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
+  final ValueNotifier<DateTime> dmDiagnosedDateNotifier =
+      ValueNotifier<DateTime>(
+    DateTime(1980, 1, 1),
+  );
   DateTime? dmDiagnosedDate;
   String? rapidInsulinType;
   String? longActingInsulinType;
@@ -32,10 +36,11 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                '次に糖尿病に関する情報を入力しましょう',
+                '次に糖尿病に関する情報です',
                 style: kHeader2TextStyle,
               ),
             ),
+            const SizedBox(height: 40),
             buildDateFieldWithIcon(
               context: context,
               label: "1型糖尿病と診断された年",
@@ -46,22 +51,26 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                   dmDiagnosedDate = value;
                 });
               },
+              selectedDateNotifier: dmDiagnosedDateNotifier,
             ),
+            const SizedBox(height: 10),
             buildSelectFieldWithIcon(
-              label: "速効型インスリン",
+              label: "食前投与するインスリン",
               icon: Icons.flash_on,
               options: ['ノボラピッド', 'ヒューマリン'],
+              selectedValue: rapidInsulinType,
               onValueChanged: (value) {
                 setState(() {
                   rapidInsulinType = value;
                 });
               },
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 10),
             buildSelectFieldWithIcon(
               label: "時効型インスリン",
               icon: Icons.access_time,
               options: ['未使用', 'グラルギン', 'トレシーバ'],
+              selectedValue: longActingInsulinType,
               onValueChanged: (value) {
                 setState(() {
                   longActingInsulinType = value;
@@ -71,19 +80,20 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                 });
               },
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 10),
             if (longActingInsulinType != null && longActingInsulinType != '未使用')
               buildSelectFieldWithIcon(
                 label: "時効型インスリンの使用タイミング",
                 icon: Icons.alarm,
                 options: ['朝', '眠前'],
+                selectedValue: longActingInsulinTiming,
                 onValueChanged: (value) {
                   setState(() {
                     longActingInsulinTiming = value;
                   });
                 },
               ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 30),
             twinButton(
               leftOnPressed: () async {
                 Navigator.pop(context);

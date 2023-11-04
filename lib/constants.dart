@@ -124,7 +124,7 @@ const kBodyTextStyle = TextStyle(
 );
 
 const kColorTextStyle = TextStyle(
-    color: Color(0xFF3E3E3E),
+    color: ColorConstants.pandaBlack,
 );
 
 const kHeader1TextStyle = TextStyle(
@@ -149,4 +149,13 @@ const kFormLabelTextStyle = TextStyle(
 const kSelectTextStyle = TextStyle(
   fontSize: 18,
   color: ColorConstants.pandaBlack,
+);
+
+const kDateTextStyle = TextStyle(
+  fontSize: 16,
+  color: ColorConstants.pandaBlack,
+);
+
+const kKeyboardDoneTextStyle = TextStyle(
+  color: ColorConstants.blue,
 );

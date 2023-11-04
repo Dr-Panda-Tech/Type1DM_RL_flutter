@@ -23,7 +23,20 @@ class UserProfileCard extends StatelessWidget {
                 FutureBuilder<String?>(
                   future: profileFunc.getUserProfileImageUrl(user!.uid),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // データ読み込み中の場合、プレースホルダー画像を表示
+                      return CircleAvatar(
+                        radius: 40,
+                        backgroundImage: AssetImage('assets/images/dummy_user.png'),
+                      );
+                    } else if (snapshot.hasError) {
+                      // エラーが発生した場合、エラーアイコンを表示
+                      return CircleAvatar(
+                        radius: 40,
+                        child: Icon(Icons.error, color: Colors.red),
+                      );
+                    } else {
+                      // データの読み込みが完了した場合、取得した画像を表示
                       String? imageUrl = snapshot.data;
                       return CircleAvatar(
                         radius: 40,
@@ -32,7 +45,6 @@ class UserProfileCard extends StatelessWidget {
                             : AssetImage('assets/images/dummy_user.png') as ImageProvider,
                       );
                     }
-                    return CircularProgressIndicator();
                   },
                 ),
                 const SizedBox(width: 16),

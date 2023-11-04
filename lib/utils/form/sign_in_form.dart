@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:type1dm_rl_flutter/utils/button/main_button.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({
@@ -15,6 +15,7 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -29,14 +30,44 @@ class _SignInFormState extends State<SignInForm> {
 
   StateMachineController _getRiveController(Artboard artboard) {
     StateMachineController? controller =
-    StateMachineController.fromArtboard(artboard, "State Machine 1");
+        StateMachineController.fromArtboard(artboard, "State Machine 1");
     artboard.addController(controller!);
     return controller;
   }
 
+  void signIn(BuildContext context) async {
+    setState(() {
+      isShowLoading = true;
+      isShowConfetti = true;
+    });
+    try {
+      final email = emailController.text;
+      final password = passwordController.text;
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          isShowLoading = false;
+        });
+        check.fire(); // This should be fired only when sign-in is successful
+        confetti.fire();
+        Navigator.pushReplacementNamed(
+            context, '/rootPage'); // ログイン成功時にリダイレクトするルート
+      });
+    } catch (e) {
+      setState(() {
+        isShowLoading = false;
+      });
+      error.fire(); // Fire the error animation on catch
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authFunction = AuthFunction(context);
+    // final authFunction = AuthFunction(context);
     return Stack(
       children: [
         Form(
@@ -46,7 +77,9 @@ class _SignInFormState extends State<SignInForm> {
             children: [
               const Text(
                 "Email",
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(
+                  color: ColorConstants.pandaBlack,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, bottom: 16),
@@ -68,7 +101,9 @@ class _SignInFormState extends State<SignInForm> {
               ),
               const Text(
                 "Password",
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(
+                  color: ColorConstants.pandaBlack,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, bottom: 16),
@@ -105,20 +140,7 @@ class _SignInFormState extends State<SignInForm> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, bottom: 24),
                 child: buildButton(
-                  onPressed: () {
-                    authFunction.signIn(
-                        emailController: emailController,
-                        passwordController: passwordController,
-                        check: check,
-                        error: error,
-                        confetti: confetti,
-                        setLoadingState: (bool state) {
-                          setState(() {
-                            isShowLoading = state;
-                          });
-                        }
-                    );
-                  },
+                  onPressed: () => signIn(context),
                   text: 'Sign in',
                   icon: Icons.login,
                   color: ColorConstants.pandaBlack,
@@ -133,7 +155,7 @@ class _SignInFormState extends State<SignInForm> {
                 "assets/RiveAssets/check.riv",
                 onInit: (artboard) {
                   StateMachineController controller =
-                  _getRiveController(artboard);
+                      _getRiveController(artboard);
                   check = controller.findSMI("Check") as SMITrigger;
                   error = controller.findSMI("Error") as SMITrigger;
                   reset = controller.findSMI("Reset") as SMITrigger;
@@ -148,7 +170,7 @@ class _SignInFormState extends State<SignInForm> {
                   "assets/RiveAssets/confetti.riv",
                   onInit: (artboard) {
                     StateMachineController controller =
-                    _getRiveController(artboard);
+                        _getRiveController(artboard);
                     confetti =
                         controller.findSMI("Trigger explosion") as SMITrigger;
                   },

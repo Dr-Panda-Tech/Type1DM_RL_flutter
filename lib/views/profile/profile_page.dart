@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/widget/list_tile.dart';
 import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
@@ -17,12 +16,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final uid = user?.uid;
-    final email = user?.email;
-    final data = 'ID: $uid, Email: $email';
     final profileFunc = ProfileFunction(context);
-
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
       body: StreamBuilder<User?>(

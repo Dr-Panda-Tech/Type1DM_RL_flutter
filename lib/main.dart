@@ -44,7 +44,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // title: 'Type 1 DM insulin app',
       theme: pandaTheme,
       home: const AuthPage(),
       routes: {

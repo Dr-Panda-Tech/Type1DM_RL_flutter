@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
+import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
 class PrimaryCareSettingsPage extends StatefulWidget {
   final bool fromSettings;
@@ -19,10 +20,11 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
   Map<String, dynamic>? clinicMaster;
   Map<String, dynamic>? hospitalMaster;
 
-  String? selectedType;
+  String? selectedType = '病院';
   String? selectedPrefecture;
   String? selectedDistrict;
-  String? selectedHospital;
+  String? selectedFacility;
+  String? selectedFacilityId;  // これを追加
 
   @override
   void initState() {
@@ -32,14 +34,22 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
 
   void loadJsonData() async {
     String clinicData =
-    await rootBundle.loadString('assets/json/clinicMaster.json');
+        await rootBundle.loadString('assets/json/clinicMaster.json');
     String hospitalData =
-    await rootBundle.loadString('assets/json/hospitalMaster.json');
+        await rootBundle.loadString('assets/json/hospitalMaster.json');
 
     setState(() {
       clinicMaster = json.decode(clinicData);
       hospitalMaster = json.decode(hospitalData);
     });
+  }
+
+  Map<String, dynamic> getMasterData() {
+    if (selectedType == "クリニック") {
+      return clinicMaster!;
+    } else {
+      return hospitalMaster!;
+    }
   }
 
   @override
@@ -59,86 +69,69 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                 style: kHeader2TextStyle,
               ),
             ),
-            Expanded(
-              child: ListView(
-                children: [
-                  DropdownButton<String>(
-                    value: selectedType,
-                    items: ['クリニック', '病院'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+            buildSelectFieldWithIcon(
+              label: "クリニックか病院かを選択",
+              icon: Icons.location_on,
+              options: ['クリニック', '病院'],
+              onValueChanged: (value) {
+                setState(() {
+                  selectedType = value;
+                  selectedPrefecture = null;
+                  selectedDistrict = null;
+                  selectedFacility = null;
+                });
+              },
+              selectedValue: selectedType,
+            ),
+            if (selectedType != null) ...[
+              buildSelectFieldWithIcon(
+                label: "都道府県を選択",
+                icon: Icons.location_city,
+                options: getMasterData().keys.toList(),
+                onValueChanged: (value) {
+                  setState(() {
+                    selectedPrefecture = value;
+                    selectedDistrict = null;
+                    selectedFacility = null;
+                  });
+                },
+                selectedValue: selectedPrefecture,
+              ),
+              if (selectedPrefecture != null) ...[
+                buildSelectFieldWithIcon(
+                  label: "地区を選択",
+                  icon: Icons.map,
+                  options:getMasterData()[selectedPrefecture!].keys.toList(),
+                  onValueChanged: (value) {
+                    setState(() {
+                      selectedDistrict = value;
+                      selectedFacility = null;
+                    });
+                  },
+                  selectedValue: selectedDistrict,
+                ),
+                if (selectedDistrict != null) ...[
+                  buildSelectFieldWithIcon(
+                    label: "施設名を選択",
+                    icon: Icons.local_hospital,
+                    options: getMasterData()[selectedPrefecture!]
+                            [selectedDistrict!]
+                        .map((e) => e["name"] as String)
+                        .toList(),
+                    onValueChanged: (value) {
+                      var selectedFacility = getMasterData()[selectedPrefecture!][selectedDistrict!].firstWhere(
+                              (e) => e["name"] == value
                       );
-                    }).toList(),
-                    onChanged: (value) {
                       setState(() {
-                        selectedType = value;
-                        selectedPrefecture = null;
-                        selectedDistrict = null;
-                        selectedHospital = null;
+                        selectedFacility = value;
+                        selectedFacilityId = selectedFacility["id"];  // ここでIDを設定
                       });
                     },
-                    hint: Text('クリニックか病院を選択'),
+                    selectedValue: selectedFacility,
                   ),
-                  if (selectedType != null && (selectedType == 'クリニック' ? clinicMaster != null : hospitalMaster != null)) ...[
-                    DropdownButton<String>(
-                      value: selectedPrefecture,
-                      items: (selectedType == 'クリニック' ? clinicMaster! : hospitalMaster!).keys.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPrefecture = value;
-                          selectedDistrict = null;
-                          selectedHospital = null;
-                        });
-                      },
-                      hint: Text('都道府県を選択'),
-                    ),
-                    if (selectedPrefecture != null) ...[
-                      DropdownButton<String>(
-                        value: selectedDistrict,
-                        items: (selectedType == 'クリニック' ? clinicMaster![selectedPrefecture!] : hospitalMaster![selectedPrefecture!]).keys.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDistrict = value;
-                            selectedHospital = null;
-                          });
-                        },
-                        hint: Text('地区を選択'),
-                      ),
-                      if (selectedDistrict != null) ...[
-                        DropdownButton<String>(
-                          value: selectedHospital,
-                          items: (selectedType == 'クリニック' ? clinicMaster![selectedPrefecture!][selectedDistrict!] : hospitalMaster![selectedPrefecture!][selectedDistrict!])
-                              .map((e) => e as Map<String, dynamic>)
-                              .map((Map<String, dynamic> hospitalData) {
-                            return DropdownMenuItem<String>(
-                              value: hospitalData["name"],
-                              child: Text(hospitalData["name"]),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedHospital = value;
-                            });
-                          },
-                          hint: Text('病院/クリニックを選択'),
-                        ),
-                      ],
-                    ],
-                  ],
                 ],
-              ),
-            ),
+              ],
+            ],
             const SizedBox(height: 32),
             twinButton(
               leftOnPressed: () async {
@@ -146,17 +139,16 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
               },
               leftText: '戻る',
               rightOnPressed: () async {
-                if (selectedType != null && selectedPrefecture != null && selectedDistrict != null && selectedHospital != null) {
+                if (selectedFacilityId != null) {  // selectedFacilityIdを確認
                   await savePrimaryCareFirestore(
-                    selectedType: selectedType!,
-                    selectedPrefecture: selectedPrefecture!,
-                    selectedDistrict: selectedDistrict!,
-                    selectedHospital: selectedHospital!,
+                    selectedFacilityId: selectedFacilityId!,  // IDを関数に渡す
                   );
                   Navigator.pushReplacementNamed(context, '/authPage');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('全ての情報を入力してください。'),)
+                    const SnackBar(
+                      content: Text('全ての情報を入力してください。'),
+                    ),
                   );
                 }
               },

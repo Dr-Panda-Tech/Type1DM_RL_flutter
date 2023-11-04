@@ -10,24 +10,33 @@ class TermsOfServicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstants.backgroundColor,
-      appBar: AppBar(
-        title: Text('利用規約'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.only(
+                  top: 40, // ボタンの位置を調整するための余白を追加
+                  left: 20,
+                ),
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back), // 戻るボタンのアイコン
+                  onPressed: () {
+                    _goBackToProfilePage(context);// 前のページに戻る
+                  },
+                ),
+              ),
               Text(
                 '利用規約',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: kHeader1TextStyle,
               ),
               SizedBox(height: 16),
               Text(
                 '1. 利用登録',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: kHeader2TextStyle,
               ),
               SizedBox(height: 8),
               Text(
@@ -37,7 +46,7 @@ class TermsOfServicePage extends StatelessWidget {
               SizedBox(height: 16),
               Text(
                 '2. ユーザーIDおよびパスワードの管理',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: kHeader2TextStyle,
               ),
               SizedBox(height: 8),
               Text(

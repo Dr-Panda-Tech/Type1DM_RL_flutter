@@ -43,7 +43,7 @@ class SignInButton extends StatelessWidget {
         this.padding = const EdgeInsets.all(0),
         this.shape,
         this.text,
-        this.width = 240,
+        this.width = 220,
         this.elevation = 2.0,
       }) : assert(
   mini != true ||

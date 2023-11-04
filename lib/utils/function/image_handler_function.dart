@@ -3,18 +3,20 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-class ImageUploader {
+class ImageHandler {
   final BuildContext context;
-  final ImagePicker _picker = ImagePicker();
   File? imageFile; // 画像ファイルを保存するためのプロパティ
+  final ImagePicker _picker = ImagePicker();
 
-  ImageUploader(this.context);
+  ImageHandler(this.context);
 
-  Future<void> pickAndSetImage() async {
-    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+  Future<File?> pickAndSetImage() async {
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      imageFile = File(pickedImage.path); // 選択された画像をimageFileプロパティにセット
+      imageFile = File(pickedImage.path);
     }
+    return imageFile;
   }
 
   Future<void> uploadCurrentImage() async {
@@ -24,10 +26,18 @@ class ImageUploader {
         await FirebaseStorage.instance
             .ref('userImages/${DateTime.now().toIso8601String()}.$extension')
             .putFile(imageFile!);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('画像が正常にアップロードされました')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('画像が正常にアップロードされました'),
+          ),
+        );
       } catch (e) {
         print(e);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('画像のアップロードに失敗しました')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('画像のアップロードに失敗しました'),
+          ),
+        );
       }
     }
   }

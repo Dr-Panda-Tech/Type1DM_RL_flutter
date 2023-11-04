@@ -5,11 +5,10 @@ Future<void> saveDemographicsToFirestore({
   required String username,
   required String? gender,
   required DateTime? birthDate,
-  required int height,
+  required double height,
   required double weight,
 }) async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) return;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
 
   String currentTime = DateTime.now().toIso8601String();
 
@@ -24,25 +23,19 @@ Future<void> saveDemographicsToFirestore({
 
   await FirebaseFirestore.instance
       .collection('demographics')
-      .doc(user.uid)
+      .doc(uid)
       .set(userData);
 }
 
 Future<void> savePrimaryCareFirestore({
-  required String selectedType,
-  required String selectedPrefecture,
-  required String selectedDistrict,
-  required String selectedHospital,
+  required String selectedFacilityId, // 施設の一意のIDだけを引数として受け取る
 }) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   String currentTime = DateTime.now().toIso8601String();
 
   final data = {
     'timestamp': currentTime,
-    'type': selectedType,
-    'prefecture': selectedPrefecture,
-    'district': selectedDistrict,
-    'hospital': selectedHospital,
+    'hospitalId': selectedFacilityId, // IDだけを保存
   };
 
   await FirebaseFirestore.instance
@@ -50,6 +43,7 @@ Future<void> savePrimaryCareFirestore({
       .doc(uid)
       .set(data);
 }
+
 
 Future<void> saveInsulinTypeFirestore({
   required String rapidInsulinType,

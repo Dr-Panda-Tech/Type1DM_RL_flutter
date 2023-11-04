@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:type1dm_rl_flutter/services/auth_service.dart';
 import 'package:type1dm_rl_flutter/utils/button/main_button.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
+// import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -37,9 +38,62 @@ class _SignUpFormState extends State<SignUpForm> {
     return controller;
   }
 
+  void signUp(BuildContext context) async {
+    setState(() {
+      isShowLoading = true;
+      isShowConfetti = true;
+    });
+    try {
+      final email = emailController.text;
+      final password = passwordController.text;
+      final user = await _authService.signUpWithEmailAndPassword(email, password);
+
+      if (user != null) {
+        // Check if user exists in the demographics table
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('demographics')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          // User exists in demographics, show error
+          error.fire();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('User already exists!')),
+          );
+        } else {
+          // User doesn't exist in demographics, navigate to demographics page
+          check.fire();
+          Future.delayed(Duration(seconds: 2), () {
+            setState(() {
+              isShowLoading = false;
+            });
+            confetti.fire();
+            Navigator.pushReplacementNamed(context, '/demographicsSettingPage');
+          });
+        }
+      } else {
+        error.fire();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error during sign up')),
+        );
+      }
+    } catch (e) {
+      error.fire();
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          isShowLoading = false;
+        });
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authFunction = AuthFunction(context);
+    // final authFunction = AuthFunction(context);
     return Stack(
       children: [
         Form(
@@ -170,18 +224,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         );
                         return;
                       }
-                      authFunction.signUp(
-                          emailController: emailController,
-                          passwordController: passwordController,
-                          check: check,
-                          authService: _authService,
-                          error: error,
-                          confetti: confetti,
-                          setLoadingState: (bool state) {
-                            setState(() {
-                              isShowLoading = state;
-                            });
-                          });
+                      signUp(context);
                     }
                   },
                   text: 'Sign Up',
