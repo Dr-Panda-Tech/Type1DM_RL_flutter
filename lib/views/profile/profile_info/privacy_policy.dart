@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_others/contact_page.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
-  void _goBackToProfilePage(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profilePage');
-  }
-
   @override
   Widget build(BuildContext context) {
+    final profileFunc = ProfileFunction(context);
     return Scaffold(
+      backgroundColor: ColorConstants.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -25,7 +24,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 child: IconButton(
                   icon: Icon(Icons.arrow_back), // 戻るボタンのアイコン
                   onPressed: () {
-                    _goBackToProfilePage(context);// 前のページに戻る
+                    profileFunc.goBackToProfilePage(context);// 前のページに戻る
                   },
                 ),
               ),

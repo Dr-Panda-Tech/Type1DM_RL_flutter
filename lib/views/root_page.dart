@@ -7,7 +7,7 @@ import 'package:type1dm_rl_flutter/views/news/news_page.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_page.dart';
 
 class RootPage extends StatefulWidget {
-  const RootPage({super.key});
+  const RootPage({Key? key}) : super(key: key);
 
   @override
   _RootPageState createState() => _RootPageState();
@@ -15,6 +15,8 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   int _selectedIndex = 0;
+  final PageController _pageController = PageController(initialPage: 0);
+
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     GraphPage(),
@@ -24,86 +26,44 @@ class _RootPageState extends State<RootPage> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _pageController.jumpToPage(index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor:ColorConstants.backgroundColor,
-        body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      backgroundColor: ColorConstants.backgroundColor,
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: _widgetOptions,
       ),
-      // floatingActionButton: Material(
-      //   color: Colors.transparent,
-      //   child: InkWell(
-      //     borderRadius: BorderRadius.circular(40),  // これはContainerのborderRadiusと同じでなければなりません
-      //     onTap: () {
-      //       _onItemTapped(2);  // 2はRecordPageのインデックス
-      //     },
-      //     child: Padding(
-      //       padding: const EdgeInsets.only(bottom: 0),
-      //       child: Container(
-      //         height: 70,
-      //         width: 70,
-      //         decoration: BoxDecoration(
-      //           gradient: LinearGradient(
-      //             colors: [
-      //               ColorConstants.accentColor.withOpacity(1.0),
-      //               ColorConstants.accentColor,
-      //             ],
-      //             begin: Alignment.topLeft,
-      //             end: Alignment.bottomRight,
-      //           ),
-      //           borderRadius: BorderRadius.circular(40),
-      //           boxShadow: [
-      //             BoxShadow(
-      //               color: Colors.black.withOpacity(0.2),
-      //               offset: Offset(0, 10),
-      //               blurRadius: 10,
-      //               spreadRadius: 3,
-      //             )
-      //           ],
-      //         ),
-      //         child: const FittedBox(
-      //           fit: BoxFit.none,
-      //           child: Column(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: [
-      //               Icon(Icons.edit, size: 30, color: Colors.white),
-      //               Text("記録", style: TextStyle(color: Colors.white, fontSize: 12)),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(fontSize: 9),  // 選択されたアイテムのテキストサイズ
+        selectedLabelStyle: TextStyle(fontSize: 9),
         unselectedLabelStyle: TextStyle(fontSize: 9),
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'ホーム',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: '血糖推移',
           ),
           BottomNavigationBarItem(
-            // icon: Container(height: 0), // 中央のアイコンを空に
             icon: Icon(Icons.edit),
             label: '記録',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.article),
             label: 'ニュース',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'プロフィール',
           ),
@@ -115,5 +75,11 @@ class _RootPageState extends State<RootPage> {
         type: BottomNavigationBarType.fixed,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

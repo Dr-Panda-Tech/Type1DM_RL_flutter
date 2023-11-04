@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
 
 class ProfileEditPage extends StatefulWidget {
   @override
@@ -9,14 +10,11 @@ class ProfileEditPage extends StatefulWidget {
 class _ProfileEditPageState extends State<ProfileEditPage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-
-  void _goBackToProfilePage(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profilePage');
-  }
-
   @override
   Widget build(BuildContext context) {
+    final profileFunc = ProfileFunction(context);
     return Scaffold(
+      backgroundColor: ColorConstants.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -32,7 +30,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 child: IconButton(
                   icon: Icon(Icons.arrow_back), // 戻るボタンのアイコン
                   onPressed: () {
-                    _goBackToProfilePage(context); // 前のページに戻る
+                    profileFunc.goBackToProfilePage(context); // 前のページに戻る
                   },
                 ),
               ),
