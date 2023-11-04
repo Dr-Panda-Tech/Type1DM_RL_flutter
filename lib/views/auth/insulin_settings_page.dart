@@ -106,7 +106,11 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                     longActingInsulinType: longActingInsulinType!,
                     longActingInsulinTiming: longActingInsulinTiming,
                   );
-                  Navigator.pushNamed(context, '/primaryCareSettingsPage');
+                  if (widget.fromSettings) {
+                    Navigator.pop(context);  // RecordPageに戻る
+                  } else {
+                    Navigator.pushNamed(context, '/primaryCareSettingsPage');
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

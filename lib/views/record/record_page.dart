@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/function/record_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/list_tile.dart';
-import 'package:type1dm_rl_flutter/views/record/blood_test_page.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({super.key});
@@ -33,6 +32,13 @@ class _RecordPageState extends State<RecordPage> {
               titleText: '血液検査結果を入力する',
               onTapAction: () {
                 Navigator.pushNamed(context, '/bloodTestPage');
+              },
+            ),
+            customListTile(
+              leadingIcon: Icons.medication_liquid,
+              titleText: 'インスリンを変更する',
+              onTapAction: () {
+                Navigator.pushNamed(context, '/insulinSettingsPage');
               },
             ),
             DropdownButton<String>(
