@@ -6,7 +6,7 @@ class ColorConstants {
   static const Color pandaGreen = Color(0xFFBADCAD);
   static const Color pandaBlack = Color(0xFF3E3E3E);
   static const Color accentColor = Color(0xFF396122);
-  static const Color fieldGrey =  Color(0xFF3E3E3E);
+  static const Color fieldGrey =  Color(0xFFE6E6E6);
   static const Color buttonMaterialColor = Color(0xFFF2F2F7);
   static const Color settingsListBackground = Color(0xFFF2F2F7);
   static const Color settingsSectionBackground = Colors.white;
