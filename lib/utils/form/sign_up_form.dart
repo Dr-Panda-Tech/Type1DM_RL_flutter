@@ -110,6 +110,7 @@ class _SignUpFormState extends State<SignUpForm> {
               Padding(
                 padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                 child: TextFormField(
+                  keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   validator: (value) {
                     if (value!.isEmpty) {
