@@ -65,3 +65,54 @@ Future<void> saveInsulinTypeFirestore({
       .doc(uid)
       .set(data);
 }
+
+Future<void> saveGlucoseInsulinToFirebase({
+  required String? userId,
+  required String? mealCategory,
+  required String glucose,
+  required int? recommendationUnit,
+}) async {
+  if (userId == null) {
+    print("User is not logged in.");
+    return;
+  }
+
+  // 現在の時刻をISO 8601形式の文字列として取得
+  String currentTime = DateTime.now().toIso8601String();
+
+  final data = {
+    'userId': userId,
+    'timestamp': currentTime,
+    'mealCategory': mealCategory,
+    'glucose': glucose,
+    'recommendation': recommendationUnit,
+  };
+
+  await FirebaseFirestore.instance
+      .collection('glucose_insulin')
+      .doc(userId)
+      .set(data);
+}
+
+Future<void> saveContactFormFirestore({
+  required String name,
+  required String email,
+  required String? message,
+}) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+
+  CollectionReference contacts = FirebaseFirestore.instance.collection('contact_form');
+
+  return contacts.add({
+    'uid': uid,
+    'name': name,
+    'email': email,
+    'message': message,
+    'timestamp': FieldValue.serverTimestamp(),
+  }).then((value) {
+    print("Contact Added");
+  }).catchError((error) {
+    print("Failed to add contact: $error");
+  });
+}
+
