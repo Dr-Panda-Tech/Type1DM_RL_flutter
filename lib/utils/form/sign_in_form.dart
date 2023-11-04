@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:type1dm_rl_flutter/utils/button/main_button.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({
@@ -30,38 +31,56 @@ class _SignInFormState extends State<SignInForm> {
 
   StateMachineController _getRiveController(Artboard artboard) {
     StateMachineController? controller =
-        StateMachineController.fromArtboard(artboard, "State Machine 1");
+    StateMachineController.fromArtboard(artboard, "State Machine 1");
     artboard.addController(controller!);
     return controller;
   }
 
   void signIn(BuildContext context) async {
-    setState(() {
-      isShowLoading = true;
-      isShowConfetti = true;
-    });
-    try {
-      final email = emailController.text;
-      final password = passwordController.text;
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          isShowLoading = false;
-        });
-        check.fire(); // This should be fired only when sign-in is successful
-        confetti.fire();
-        Navigator.pushReplacementNamed(
-            context, '/rootPage'); // ログイン成功時にリダイレクトするルート
-      });
-    } catch (e) {
+    if (_formKey.currentState!.validate()) {
       setState(() {
-        isShowLoading = false;
+        isShowLoading = true;
+        isShowConfetti = true;
       });
-      error.fire(); // Fire the error animation on catch
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      try {
+        final email = emailController.text;
+        final password = passwordController.text;
+        await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+        Future.delayed(Duration(seconds: 2), () {
+          setState(() {
+            isShowLoading = false;
+          });
+          check.fire();
+          confetti.fire();
+          Navigator.pushReplacementNamed(context, '/rootPage');
+        });
+      } catch (e) {
+        setState(() {
+          isShowLoading = true;
+        });
+
+        if (e is FirebaseAuthException &&
+            (e.code == 'user-not-found' || e.code == 'wrong-password')) {
+          Fluttertoast.showToast(
+            msg: "Incorrect email or password",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
+
+        error.fire();
+
+        Future.delayed(Duration(seconds: 2), () {
+          setState(() {
+            isShowLoading = false;
+          });
+        });
+      }
     }
   }
 
@@ -86,17 +105,19 @@ class _SignInFormState extends State<SignInForm> {
                 child: TextFormField(
                   controller: emailController,
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return "";
+                    if (value!.isEmpty && passwordController.text.isEmpty) {
+                      return "Please enter your email and password";
+                    } else if (value.isEmpty) {
+                      return "Please enter your email";
                     }
                     return null;
                   },
                   onSaved: (email) {},
                   decoration: InputDecoration(
                       prefixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Icon(Icons.email),
-                  )),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Icon(Icons.email),
+                      )),
                 ),
               ),
               const Text(
@@ -110,8 +131,10 @@ class _SignInFormState extends State<SignInForm> {
                 child: TextFormField(
                   controller: passwordController,
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return "";
+                    if (value!.isEmpty && emailController.text.isEmpty) {
+                      return "Please enter your email and password";
+                    } else if (value.isEmpty) {
+                      return "Please enter your password";
                     }
                     return null;
                   },
@@ -151,31 +174,31 @@ class _SignInFormState extends State<SignInForm> {
         ),
         isShowLoading
             ? CustomPositioned(
-                child: RiveAnimation.asset(
-                "assets/RiveAssets/check.riv",
-                onInit: (artboard) {
-                  StateMachineController controller =
-                      _getRiveController(artboard);
-                  check = controller.findSMI("Check") as SMITrigger;
-                  error = controller.findSMI("Error") as SMITrigger;
-                  reset = controller.findSMI("Reset") as SMITrigger;
-                },
-              ))
+            child: RiveAnimation.asset(
+              "assets/RiveAssets/check.riv",
+              onInit: (artboard) {
+                StateMachineController controller =
+                _getRiveController(artboard);
+                check = controller.findSMI("Check") as SMITrigger;
+                error = controller.findSMI("Error") as SMITrigger;
+                reset = controller.findSMI("Reset") as SMITrigger;
+              },
+            ))
             : const SizedBox(),
         isShowConfetti
             ? CustomPositioned(
-                child: Transform.scale(
-                scale: 6,
-                child: RiveAnimation.asset(
-                  "assets/RiveAssets/confetti.riv",
-                  onInit: (artboard) {
-                    StateMachineController controller =
-                        _getRiveController(artboard);
-                    confetti =
-                        controller.findSMI("Trigger explosion") as SMITrigger;
-                  },
-                ),
-              ))
+            child: Transform.scale(
+              scale: 6,
+              child: RiveAnimation.asset(
+                "assets/RiveAssets/confetti.riv",
+                onInit: (artboard) {
+                  StateMachineController controller =
+                  _getRiveController(artboard);
+                  confetti =
+                  controller.findSMI("Trigger explosion") as SMITrigger;
+                },
+              ),
+            ))
             : const SizedBox()
       ],
     );
