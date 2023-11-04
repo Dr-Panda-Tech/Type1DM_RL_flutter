@@ -8,6 +8,10 @@ class ProfileFunction {
 
   ProfileFunction(this.context);
 
+  void goBackToProfilePage(BuildContext context) {
+    Navigator.pop(context);
+  }
+
   Future<String?> getUsername(String uid) async {
     final doc = await FirebaseFirestore.instance
         .collection('user_detail')

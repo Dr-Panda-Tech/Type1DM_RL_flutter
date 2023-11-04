@@ -26,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
             return CircularProgressIndicator(); // データの取得中に表示するウィジェット
           }
           return ListView(
+            key: PageStorageKey<String>('profileListView'),  // これを追加
             children: [
               UserProfileCard(),
               ListTile(

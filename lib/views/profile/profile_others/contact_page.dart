@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -9,12 +10,9 @@ class ContactPage extends StatefulWidget {
 }
 
 class _ContactPageState extends State<ContactPage> {
-  void _goBackToProfilePage(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed('/profilePage');
-  }
-
   @override
   Widget build(BuildContext context) {
+    final profileFunc = ProfileFunction(context);
     return Form(
         child: Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
@@ -30,7 +28,7 @@ class _ContactPageState extends State<ContactPage> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back), // 戻るボタンのアイコン
                 onPressed: () {
-                  _goBackToProfilePage(context); // 前のページに戻る
+                  profileFunc.goBackToProfilePage(context); // 前のページに戻る
                 },
               ),
             ),
