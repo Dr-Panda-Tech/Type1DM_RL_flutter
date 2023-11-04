@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/function/record_function.dart';
+import 'package:type1dm_rl_flutter/utils/widget/list_tile.dart';
+import 'package:type1dm_rl_flutter/views/record/blood_test_page.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({super.key});
@@ -14,39 +16,8 @@ class RecordPage extends StatefulWidget {
 class _RecordPageState extends State<RecordPage> {
   String? mealCategory;
   TextEditingController glucoseController = TextEditingController();
-  bool _isLoading = false;  // ロードアニメーションの表示フラグ
-  String? _recommendation;
-
-  Future<void> _saveData() async {
-
-    // 現在のユーザーのUIDを取得
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      print("User is not logged in.");
-      return;
-    }
-
-    // 現在の時刻をISO 8601形式の文字列として取得
-    String currentTime = DateTime.now().toIso8601String();
-
-    final data = {
-      'userId': uid, // ユーザーIDを追加
-      'timestamp': currentTime,
-      'mealCategory': mealCategory,
-      'glucose': glucoseController.text,
-      'recommendation': _recommendation, //
-    };
-
-    await FirebaseFirestore.instance
-        .collection('insulin')
-        .doc(uid)
-        .set(data);
-  }
-
-  String _getRecommendation() {
-    // ここではダミーデータを返します
-    return "5単位";
-  }
+  bool _isLoading = false;
+  int? recommendationUnit;  // 変数名を変更
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +28,13 @@ class _RecordPageState extends State<RecordPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            customListTile(
+              leadingIcon: Icons.bloodtype,
+              titleText: '血液検査結果を入力する',
+              onTapAction: () {
+                Navigator.pushNamed(context, '/bloodTestPage');
+              },
+            ),
             DropdownButton<String>(
               value: mealCategory,
               hint: const Text(
@@ -98,9 +76,14 @@ class _RecordPageState extends State<RecordPage> {
                 setState(() {
                   _isLoading = true;
                 });
-                await Future.delayed(const Duration(seconds: 2),);  // ダミーの遅延
-                _recommendation = _getRecommendation();
-                _saveData();
+                await Future.delayed(const Duration(seconds: 2));
+                recommendationUnit = calculateRecommendation();  // 関数名を変更
+                saveGlucoseInsulinToFirebase(
+                  userId: FirebaseAuth.instance.currentUser?.uid,
+                  mealCategory: mealCategory,
+                  glucose: glucoseController.text,
+                  recommendationUnit: recommendationUnit,  // 変数名を変更
+                );
                 setState(() {
                   _isLoading = false;
                 });
@@ -111,9 +94,9 @@ class _RecordPageState extends State<RecordPage> {
             const SizedBox(height: 20),
             if (_isLoading)
               const CircularProgressIndicator(),  // ローディング中はアニメーションを表示
-            if (_recommendation != null && !_isLoading)
+            if (recommendationUnit != null && !_isLoading)
               Text(
-                '推奨単位数: $_recommendation',
+                '推奨単位数: $recommendationUnit単位',
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),  // 計算後は推奨インスリン単位を表示
           ],
