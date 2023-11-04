@@ -150,7 +150,6 @@ class _ContactPageState extends State<ContactPage> {
                             false; // ダイアログの外部をタップして閉じた場合などにはfalseを返す
 
                         // 「OK」が選択された場合に送信
-                        // 「OK」が選択された場合に送信
                         if (shouldSend) {
                           saveContactFormFirestore(
                             name: _nameController.text,
