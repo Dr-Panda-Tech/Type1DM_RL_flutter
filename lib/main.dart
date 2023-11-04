@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/firebase_options.dart';
@@ -45,6 +46,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: pandaTheme,
+      locale: Locale('ja', 'JP'),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate, // これも追加
+      ],
+      supportedLocales: [
+        const Locale('ja', 'JP'), // 日本語
+      ],
       home: const AuthPage(),
       routes: {
         '/authPage': (context) => const AuthPage(),
