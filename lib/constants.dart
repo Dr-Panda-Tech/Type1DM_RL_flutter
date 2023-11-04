@@ -6,7 +6,7 @@ class ColorConstants {
   static const Color pandaGreen = Color(0xFFBADCAD);
   static const Color pandaBlack = Color(0xFF3E3E3E);
   static const Color accentColor = Color(0xFF396122);
-  static const Color fieldGrey =  Color(0xFFE5E5E5);
+  static const Color fieldGrey =  Color(0xFF3E3E3E);
   static const Color buttonMaterialColor = Color(0xFFF2F2F7);
   static const Color settingsListBackground = Color(0xFFF2F2F7);
   static const Color settingsSectionBackground = Colors.white;
@@ -22,7 +22,7 @@ class ColorConstants {
 ThemeData pandaTheme = ThemeData(
   useMaterial3: true,
   appBarTheme: const AppBarTheme(
-    color: Color(0xFF222222),
+    color: ColorConstants.backgroundColor,
     titleTextStyle: TextStyle(
       color: Colors.white,
       fontSize: 25.0,
@@ -159,3 +159,38 @@ const kDateTextStyle = TextStyle(
 const kKeyboardDoneTextStyle = TextStyle(
   color: ColorConstants.blue,
 );
+
+const kAppBarTextStyle = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+  color: ColorConstants.pandaBlack,
+);
+
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String titleText;
+
+  CustomAppBar({required this.titleText});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: ColorConstants.backgroundColor,
+      elevation: 1.0,
+      centerTitle: true,
+      title: Text(
+        titleText,
+        style: kHeader1TextStyle.copyWith(fontSize: 18.0),
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1.0),
+        child: Divider(
+          height: 1,
+          color: Colors.grey,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 1.0);
+}

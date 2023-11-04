@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -12,39 +11,14 @@ class ContactPage extends StatefulWidget {
 class _ContactPageState extends State<ContactPage> {
   @override
   Widget build(BuildContext context) {
-    final profileFunc = ProfileFunction(context);
     return Form(
         child: Scaffold(
+          appBar: CustomAppBar(titleText: 'お問い合わせ'),
       backgroundColor: ColorConstants.backgroundColor,
       body: Center(
         child: Column(
           children: <Widget>[
-            Container(
-              margin: const EdgeInsets.only(
-                top: 40, // ボタンの位置を調整するための余白を追加
-                left: 20,
-              ),
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: Icon(Icons.arrow_back), // 戻るボタンのアイコン
-                onPressed: () {
-                  profileFunc.goBackToProfilePage(context); // 前のページに戻る
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(
-                top: 80,
-                left: 20,
-                right: 20,
-                bottom: 10,
-              ),
-              child: const Text(
-                'お問い合わせ',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
+            SizedBox(height: 32.0),
             Container(
               margin: const EdgeInsets.only(
                 left: 20,
