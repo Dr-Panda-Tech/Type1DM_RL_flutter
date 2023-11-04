@@ -11,6 +11,7 @@ import 'package:type1dm_rl_flutter/views/auth/insulin_settings_page.dart';
 import 'package:type1dm_rl_flutter/views/auth/primary_care_setting_page.dart';
 import 'package:type1dm_rl_flutter/views/home/home_page.dart';
 import 'package:type1dm_rl_flutter/views/graph/graph_page.dart';
+import 'package:type1dm_rl_flutter/views/record/blood_test_page.dart';
 import 'package:type1dm_rl_flutter/views/record/record_page.dart';
 import 'package:type1dm_rl_flutter/views/news/news_page.dart';
 
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
         '/homePage': (context) => const HomePage(),
         '/graphPage': (context) => const GraphPage(),
         '/recordPage': (context) => const RecordPage(),
+        '/bloodTestPage': (context) => BloodTestInputPage(),
         '/newsPage': (context) => NewsPage(),
         '/profilePage': (context) => const ProfilePage(),
         '/externalServicePage': (context) => ExternalServicePage(),
