@@ -24,7 +24,7 @@ Future<Object?> customSignInDialog(BuildContext context,
       child: Container(
         height: 620,
         margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 16),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.95),
           borderRadius: const BorderRadius.all(
@@ -35,78 +35,83 @@ Future<Object?> customSignInDialog(BuildContext context,
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset:
               false, // avoid overflow error when keyboard shows up
-          body: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Column(
-                children: [
-                  const Text(
-                    "Sign In",
-                    style: TextStyle(fontSize: 34, fontFamily: "NotoSansJP"),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      "登録済みのメールアドレスとパスワードを入力",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SignInForm(),
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: Divider(),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          "OR",
-                          style: TextStyle(color: ColorConstants.pandaBlack),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(),
-                      ),
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15.0),
-                    child: Text(
-                      "Sign in with Google or Apple",
-                      style: TextStyle(color: ColorConstants.pandaBlack),
-                    ),
-                  ),
-                  SignInButton(
-                    Buttons.Google,
-                    text: "Sign in with Google",
-                    onPressed: () async {
-                      await authFunction.signInWithGoogle();
-                    },
-                  ),
-                  SizedBox(height: 8.0),
-                  SignInButton(
-                    Buttons.Apple,
-                    text: "Sign in with Apple",
-                    onPressed: () async {
-                      await authFunction.signInWithApple();
-                    },
-                  ),
-                ],
-              ),
-              const Positioned(
-                left: 0,
-                right: 0,
-                bottom: -48,
-                child: CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.close, color: ColorConstants.pandaBlack),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text(
+                  "Sign In",
+                  style: TextStyle(fontSize: 34, fontFamily: "NotoSansJP"),
                 ),
-              ),
-            ],
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    "登録済みのメールアドレスとパスワードを入力",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SignInForm(),
+                const Row(
+                  children: [
+                    Expanded(
+                      child: Divider(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        "OR",
+                        style: TextStyle(color: ColorConstants.pandaBlack),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(),
+                    ),
+                  ],
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(
+                    "Sign in with Google or Apple",
+                    style: TextStyle(color: ColorConstants.pandaBlack),
+                  ),
+                ),
+                SignInButton(
+                  Buttons.Google,
+                  text: "Sign in with Google",
+                  onPressed: () async {
+                    await authFunction.signInWithGoogle();
+                  },
+                ),
+                SizedBox(height: 5.0),
+                SignInButton(
+                  Buttons.Apple,
+                  text: "Sign in with Apple",
+                  onPressed: () async {
+                    await authFunction.signInWithApple();
+                  },
+                ),
+                SizedBox(height: 10.0), // 必要に応じてこの値を調整
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    highlightColor: Colors.transparent, // ハイライトカラーを透明に設定
+                    splashColor: Colors.transparent, // スプラッシュカラーを透明に設定
+                    child: const CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.white,
+                      child:
+                          Icon(Icons.close, color: ColorConstants.pandaBlack),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+              ],
+            ),
           ),
         ),
       ),
     ),
-  ).then(onClosed);
+  );
 }
