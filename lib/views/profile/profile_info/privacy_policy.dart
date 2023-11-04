@@ -1,37 +1,20 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_others/contact_page.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final profileFunc = ProfileFunction(context);
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
+      appBar: CustomAppBar(titleText: 'プライバシーポリシー'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(
-                  top: 40, // ボタンの位置を調整するための余白を追加
-                  left: 20,
-                ),
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back), // 戻るボタンのアイコン
-                  onPressed: () {
-                    profileFunc.goBackToProfilePage(context);// 前のページに戻る
-                  },
-                ),
-              ),
-              Text(
-                'プライバシーポリシー',
-                style: kHeader1TextStyle,
-              ),
               SizedBox(height: 16),
               Text(
                 '1. 個人情報の収集',
@@ -43,7 +26,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               Text(
-                  '当アプリは、ユーザーの同意のもと、以下の情報を収集することがあります。\n- 名前\n- 連絡先情報（メールアドレス、電話番号など）\n- 利用履歴や行動ログ'),
+                  '当アプリは、ユーザーの同意のもと、以下の情報を収集することがあります。\n・ 名前\n・ 連絡先情報（メールアドレス、電話番号など）\n・ 利用履歴や行動ログ'),
               SizedBox(height: 16.0),
               Text(
                 '2. 個人情報の利用目的',
@@ -82,25 +65,38 @@ class PrivacyPolicyPage extends StatelessWidget {
                 style: kHeader2TextStyle,
               ),
               SizedBox(height: 8),
-              Text(
-                'プライバシーポリシーに関するお問い合わせやご意見は、お問い合わせフォームまでお願いいたします。',
-                style: kHeader2TextStyle,
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'プライバシーポリシーに関するお問い合わせやご意見は、',
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                    TextSpan(
+                      text: 'お問い合わせフォーム',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          // お問い合わせフォームページへの遷移ロジック
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => ContactPage(),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(opacity: animation, child: child);
+                              },
+                            ),
+                          );
+                        },
+                    ),
+                    TextSpan(
+                      text: 'までお願いいたします。',
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 32.0),
-              TextButton(
-                child: Text('お問い合わせ'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) => ContactPage(),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(opacity: animation, child: child);
-                      },
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         ),
@@ -108,3 +104,4 @@ class PrivacyPolicyPage extends StatelessWidget {
     );
   }
 }
+
