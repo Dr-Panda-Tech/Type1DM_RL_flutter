@@ -98,7 +98,7 @@ class _AuthPageState extends State<AuthPage> {
                     TextButton(
                       onPressed: _handleSignup,
                       child: Text(
-                        'Sign up？',
+                        'Sign up?',
                         style: kUnderTextStyle,
                       ),
                     ),
