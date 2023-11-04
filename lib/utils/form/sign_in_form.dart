@@ -104,6 +104,7 @@ class _SignInFormState extends State<SignInForm> {
                 padding: const EdgeInsets.only(top: 8.0, bottom: 16),
                 child: TextFormField(
                   controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value!.isEmpty && passwordController.text.isEmpty) {
                       return "Please enter your email and password";
