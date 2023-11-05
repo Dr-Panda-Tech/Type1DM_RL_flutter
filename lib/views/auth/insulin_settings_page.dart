@@ -101,6 +101,15 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
               leftText: '戻る',
               rightOnPressed: () async {
                 if (rapidInsulinType != null && longActingInsulinType != null) {
+                  if (longActingInsulinType != '未使用' && longActingInsulinTiming == null) {
+                    // 時効型インスリンが「未使用」以外で、timingが未設定の場合のエラー
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('時効型インスリンの使用タイミングを選択してください。'),
+                      ),
+                    );
+                    return; // このポイントで関数の実行を停止
+                  }
                   await saveInsulinTypeFirestore(
                     rapidInsulinType: rapidInsulinType!,
                     longActingInsulinType: longActingInsulinType!,
