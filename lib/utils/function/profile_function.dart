@@ -237,8 +237,4 @@ class ProfileFunction {
       },
     );
   }
-
-  Future<void> deleteAccount() async {
-    await FirebaseAuth.instance.currentUser?.delete();
-  }
 }

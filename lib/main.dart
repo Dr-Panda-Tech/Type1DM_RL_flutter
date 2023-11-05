@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/firebase_options.dart';
+import 'package:type1dm_rl_flutter/views/profile/profile_others/withdrawal_page.dart';
 import 'package:type1dm_rl_flutter/views/root_page.dart';
 import 'package:type1dm_rl_flutter/views/auth/auth_page.dart';
 import 'package:type1dm_rl_flutter/views/auth/demographics_setting.dart';
@@ -30,6 +31,7 @@ import 'package:type1dm_rl_flutter/views/profile/profile_info/user_guide_page.da
 import 'package:type1dm_rl_flutter/views/profile/profile_info/terms_of_service_page.dart';
 
 import 'package:type1dm_rl_flutter/views/profile/profile_others/contact_page.dart';
+import 'package:type1dm_rl_flutter/views/profile/profile_others/withdrawal_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,6 +86,7 @@ class MyApp extends StatelessWidget {
         '/helpPage': (context) => HelpAndFAQPage(),
         '/userGuidePage': (context) => UserGuidePage(),
         '/contactPage': (context) => ContactPage(),
+        '/withdrawalPage': (context) => WithdrawalPage(),
       },
     );
   }

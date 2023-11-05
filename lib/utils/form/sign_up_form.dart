@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:type1dm_rl_flutter/services/auth_service.dart';
 import 'package:type1dm_rl_flutter/utils/button/main_button.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 // import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -43,44 +45,45 @@ class _SignUpFormState extends State<SignUpForm> {
       isShowLoading = true;
       isShowConfetti = true;
     });
+
     try {
       final email = emailController.text;
       final password = passwordController.text;
-      final user = await _authService.signUpWithEmailAndPassword(email, password);
+      final User? user = await _authService.signUpWithEmailAndPassword(email, password);
 
-      if (user != null) {
-        // Check if user exists in the demographics table
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('demographics')
-            .doc(user.uid)
-            .get();
+      // エラーハンドリング: FirebaseAuthの登録に失敗した場合
+      if (user == null) {
+        throw Exception('Failed to register with FirebaseAuth.');
+      }
 
-        if (userDoc.exists) {
-          // User exists in demographics, show error
-          error.fire();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('User already exists!')),
-          );
-        } else {
-          // User doesn't exist in demographics, navigate to demographics page
-          check.fire();
-          Future.delayed(Duration(seconds: 2), () {
-            setState(() {
-              isShowLoading = false;
-            });
-            confetti.fire();
-            Navigator.pushReplacementNamed(context, '/demographicsSettingPage');
-          });
-        }
-      } else {
+      // demographicsでのユーザー情報の取得
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('demographics')
+          .doc(user.uid)
+          .get();
+
+      if (userDoc.exists) {
+        // demographicsにユーザーが存在する場合
         error.fire();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error during sign up')),
+          SnackBar(content: Text('User already exists!')),
         );
+      } else {
+        // demographicsにユーザーが存在しない場合
+        check.fire();
+        saveActivateUserFirestore();  // ここで新規ユーザー情報をFirestoreに保存
+        Future.delayed(Duration(seconds: 3), () {
+          setState(() {
+            isShowLoading = false;
+          });
+          confetti.fire();
+          Navigator.pushReplacementNamed(context, '/demographicsSettingPage');
+        });
       }
+
     } catch (e) {
       error.fire();
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(Duration(seconds: 3), () {
         setState(() {
           isShowLoading = false;
         });
@@ -90,6 +93,8 @@ class _SignUpFormState extends State<SignUpForm> {
       );
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
