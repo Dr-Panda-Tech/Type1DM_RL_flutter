@@ -2,11 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-import 'package:type1dm_rl_flutter/services/auth_service.dart';
 import 'package:type1dm_rl_flutter/utils/button/main_button.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
-// import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
+import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -19,7 +18,7 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final AuthService _authService = AuthService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
@@ -41,60 +40,62 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void signUp(BuildContext context) async {
-    setState(() {
-      isShowLoading = true;
-      isShowConfetti = true;
-    });
-
     try {
       final email = emailController.text;
       final password = passwordController.text;
-      final User? user = await _authService.signUpWithEmailAndPassword(email, password);
 
-      // エラーハンドリング: FirebaseAuthの登録に失敗した場合
-      if (user == null) {
-        throw Exception('Failed to register with FirebaseAuth.');
+      // ここでFirebase Authを使ってユーザーを登録する試みを行う
+      UserCredential userCredential;
+      try {
+        userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'email-already-in-use') {
+          // Emailが既に使われている場合は、そのままsignInする
+          userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+        } else {
+          // 他のFirebaseAuthの例外は投げる
+          throw Exception(e.message);
+        }
       }
 
-      // demographicsでのユーザー情報の取得
+      final User? user = userCredential.user;
+      if (user == null) {
+        throw Exception('Failed to get user from FirebaseAuth.');
+      }
+
+      // demographicsコレクションでユーザー情報を取得する
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('demographics')
           .doc(user.uid)
           .get();
 
       if (userDoc.exists) {
-        // demographicsにユーザーが存在する場合
+        // ユーザー情報がすでに存在する場合はエラー
         error.fire();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('User already exists!')),
         );
       } else {
-        // demographicsにユーザーが存在しない場合
+        // ユーザー情報が存在しない場合は新規に作成する
         check.fire();
-        saveActivateUserFirestore();  // ここで新規ユーザー情報をFirestoreに保存
-        Future.delayed(Duration(seconds: 3), () {
-          setState(() {
-            isShowLoading = false;
-          });
-          confetti.fire();
-          Navigator.pushReplacementNamed(context, '/demographicsSettingPage');
-        });
+        saveActivateUserFirestore(); // Firestoreにユーザー情報を保存
+        confetti.fire();
+        await Future.delayed(Duration(seconds: 2));
+        Navigator.pushReplacementNamed(context, '/demographicsPage'); // demographicsページに遷移
       }
-
     } catch (e) {
+      // エラーが発生した場合はエラートリガーを実行し、エラーメッセージを表示
       error.fire();
-      Future.delayed(Duration(seconds: 3), () {
-        setState(() {
-          isShowLoading = false;
-        });
-      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
+    } finally {
+      // 最後にローディング状態を解除
+      setState(() {
+        isShowLoading = false;
+      });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
