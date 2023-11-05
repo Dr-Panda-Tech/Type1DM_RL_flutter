@@ -47,13 +47,15 @@ class _SignInFormState extends State<SignInForm> {
         final password = passwordController.text;
         await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-        Future.delayed(Duration(seconds: 3), () {
+        Future.delayed(Duration(seconds: 2), () {
           setState(() {
             isShowLoading = false;
           });
           check.fire();
           confetti.fire();
-          Navigator.pushReplacementNamed(context, '/rootPage');
+          Future.delayed(Duration(seconds: 2), () {
+            Navigator.pushReplacementNamed(context, '/rootPage');
+          });
         });
       } catch (e) {
         setState(() {
@@ -75,7 +77,7 @@ class _SignInFormState extends State<SignInForm> {
 
         error.fire();
 
-        Future.delayed(Duration(seconds: 3), () {
+        Future.delayed(Duration(seconds: 2), () {
           setState(() {
             isShowLoading = false;
           });
