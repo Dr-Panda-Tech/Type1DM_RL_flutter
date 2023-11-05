@@ -13,6 +13,7 @@ Future<void> saveDemographicsToFirestore({
   String currentTime = DateTime.now().toIso8601String();
 
   final userData = {
+    'uid' : uid,
     'timestamp': currentTime,
     'username': username,
     'gender': gender,
@@ -34,8 +35,9 @@ Future<void> savePrimaryCareFirestore({
   String currentTime = DateTime.now().toIso8601String();
 
   final data = {
+    'uid' : uid,
     'timestamp': currentTime,
-    'hospitalId': selectedFacilityId, // IDだけを保存
+    'facility_id': selectedFacilityId, // IDだけを保存
   };
 
   await FirebaseFirestore.instance
@@ -54,6 +56,7 @@ Future<void> saveInsulinTypeFirestore({
   String currentTime = DateTime.now().toIso8601String();
 
   final data = {
+    'uid' : uid,
     'timestamp': currentTime,
     'rapid_type': rapidInsulinType,
     'long_type': longActingInsulinType,
@@ -66,22 +69,17 @@ Future<void> saveInsulinTypeFirestore({
       .set(data);
 }
 
-Future<void> saveGlucoseInsulinToFirebase({
-  required String? userId,
+Future<void> saveGlucoseInsulinToFirestore({
   required String? mealCategory,
   required String glucose,
   required int? recommendationUnit,
 }) async {
-  if (userId == null) {
-    print("User is not logged in.");
-    return;
-  }
 
-  // 現在の時刻をISO 8601形式の文字列として取得
+  final uid = FirebaseAuth.instance.currentUser!.uid;
   String currentTime = DateTime.now().toIso8601String();
 
   final data = {
-    'userId': userId,
+    'uid' : uid,
     'timestamp': currentTime,
     'mealCategory': mealCategory,
     'glucose': glucose,
@@ -90,29 +88,80 @@ Future<void> saveGlucoseInsulinToFirebase({
 
   await FirebaseFirestore.instance
       .collection('glucose_insulin')
-      .doc(userId)
+      .doc(uid)
       .set(data);
 }
 
 Future<void> saveContactFormFirestore({
   required String name,
   required String email,
-  required String? message,
+  required String message,
 }) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
+  String currentTime = DateTime.now().toIso8601String();
 
-  CollectionReference contacts = FirebaseFirestore.instance.collection('contact_form');
-
-  return contacts.add({
-    'uid': uid,
+  final data = {
+    'uid' : uid,
+    'timestamp': currentTime,
     'name': name,
     'email': email,
     'message': message,
-    'timestamp': FieldValue.serverTimestamp(),
-  }).then((value) {
-    print("Contact Added");
-  }).catchError((error) {
-    print("Failed to add contact: $error");
-  });
+  };
+  // 退会情報をFirestoreに保存
+  await FirebaseFirestore.instance
+      .collection('contact_form')
+      .doc(uid)
+      .set(data);
 }
 
+Future<void> saveActivateUserFirestore() async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  String currentTime = DateTime.now().toIso8601String();
+
+  final user_status = {
+    'uid' : uid,
+    'activeStatusOn': currentTime,
+    'isActive': true,
+  };
+  await FirebaseFirestore.instance
+      .collection('user_status')
+      .doc(uid)
+      .set(user_status);
+}
+
+Future<void> saveDeactivateUserFirestore({
+  required String? reason,
+  required String? details,
+}) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  String currentTime = DateTime.now().toIso8601String();
+
+  final data = {
+    'uid' : uid,
+    'timestamp': currentTime,
+    'reason': reason,
+    'details': details,
+  };
+  // 退会情報をFirestoreに保存
+  await FirebaseFirestore.instance
+      .collection('withdrawal')
+      .doc(uid)
+      .set(data);
+
+  final user_status = {
+    'uid' : uid,
+    'activeStatusOn': currentTime,
+    'isActive': false,
+  };
+
+// ドキュメントの存在をチェック
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('user_status').doc(uid).get();
+
+  if (userDoc.exists) {
+    // ドキュメントが存在する場合、updateを使用してデータを上書き
+    await userDoc.reference.update(user_status);
+  } else {
+    // ドキュメントが存在しない場合、setを使用して新しいドキュメントを作成
+    await userDoc.reference.set(user_status);
+  }
+}

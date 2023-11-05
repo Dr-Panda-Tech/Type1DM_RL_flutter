@@ -147,8 +147,11 @@ class _ProfilePageState extends State<ProfilePage> {
               customListTile(
                 leadingIcon: Icons.door_back_door,
                 titleText: '退会',
-                onTapAction: profileFunc.deleteAccount,
+                onTapAction: () {
+                  Navigator.pushNamed(context, '/withdrawalPage');
+                }
               ),
+              Divider(indent: 16, endIndent: 16), // 区切り線の両端のマージンを追加, // 境
             ],
           );
         },

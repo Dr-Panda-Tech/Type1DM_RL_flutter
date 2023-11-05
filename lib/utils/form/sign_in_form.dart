@@ -47,7 +47,7 @@ class _SignInFormState extends State<SignInForm> {
         final password = passwordController.text;
         await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(Duration(seconds: 3), () {
           setState(() {
             isShowLoading = false;
           });
@@ -75,7 +75,7 @@ class _SignInFormState extends State<SignInForm> {
 
         error.fire();
 
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(Duration(seconds: 3), () {
           setState(() {
             isShowLoading = false;
           });
