@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/firebase_options.dart';
-import 'package:type1dm_rl_flutter/views/profile/profile_others/withdrawal_page.dart';
+
 import 'package:type1dm_rl_flutter/views/root_page.dart';
 import 'package:type1dm_rl_flutter/views/auth/auth_page.dart';
 import 'package:type1dm_rl_flutter/views/auth/demographics_setting.dart';
@@ -14,6 +14,7 @@ import 'package:type1dm_rl_flutter/views/home/home_page.dart';
 import 'package:type1dm_rl_flutter/views/graph/graph_page.dart';
 import 'package:type1dm_rl_flutter/views/record/blood_test_page.dart';
 import 'package:type1dm_rl_flutter/views/record/record_page.dart';
+import 'package:type1dm_rl_flutter/views/record/insulin_page.dart';
 import 'package:type1dm_rl_flutter/views/news/news_page.dart';
 
 import 'package:type1dm_rl_flutter/views/profile/profile_page.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
         '/homePage': (context) => const HomePage(),
         '/graphPage': (context) => const GraphPage(),
         '/recordPage': (context) => const RecordPage(),
+        '/insulinUpdatePage': (context) => InsulinUpdatePage(),
         '/bloodTestPage': (context) => BloodTestInputPage(),
         '/newsPage': (context) => NewsPage(),
         '/profilePage': (context) => const ProfilePage(),

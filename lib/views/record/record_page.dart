@@ -38,7 +38,7 @@ class _RecordPageState extends State<RecordPage> {
               leadingIcon: Icons.medication_liquid,
               titleText: 'インスリンを変更する',
               onTapAction: () {
-                Navigator.pushNamed(context, '/insulinSettingsPage');
+                Navigator.pushNamed(context, '/insulinUpdatePage');
               },
             ),
             DropdownButton<String>(
