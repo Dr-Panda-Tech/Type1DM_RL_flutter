@@ -4,15 +4,14 @@ import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
-class InsulinSettingsPage extends StatefulWidget {
-
-  const InsulinSettingsPage({super.key});
+class InsulinUpdatePage extends StatefulWidget {
+  const InsulinUpdatePage({super.key});
 
   @override
-  _InsulinSettingsPageState createState() => _InsulinSettingsPageState();
+  _InsulinUpdatePageState createState() => _InsulinUpdatePageState();
 }
 
-class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
+class _InsulinUpdatePageState extends State<InsulinUpdatePage> {
   final ValueNotifier<DateTime?> dmDiagnosedDateNotifier =
       ValueNotifier<DateTime?>(null);
   final ValueNotifier<String?> rapidInsulinTypeNotifier =
@@ -39,24 +38,11 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                '次に糖尿病に関する情報です',
+                '使用するインスリンを更新します',
                 style: kHeader2TextStyle,
               ),
             ),
             const SizedBox(height: 40),
-            buildYearDateFieldWithIcon(
-              context: context,
-              label: "1型糖尿病と診断された年",
-              icon: Icons.calendar_today,
-              initialDate: DateTime(1980, 1, 1),
-              onDateChanged: (value) {
-                setState(() {
-                  dmDiagnosedDate = value;
-                });
-              },
-              selectedDateNotifier: dmDiagnosedDateNotifier,
-            ),
-            const SizedBox(height: 10),
             buildListSelectionWithIcon(
               context: context,
               label: "食前投与するインスリン",
@@ -122,7 +108,7 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                     longActingInsulinType: longActingInsulinType!,
                     longActingInsulinTiming: longActingInsulinTiming,
                   );
-                  Navigator.pushNamed(context, '/primaryCareSettingsPage');
+                  Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -131,7 +117,7 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                   );
                 }
               },
-              rightText: '次へ',
+              rightText: '更新する',
             ),
           ],
         ),
