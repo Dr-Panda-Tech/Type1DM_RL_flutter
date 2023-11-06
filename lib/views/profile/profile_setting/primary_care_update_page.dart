@@ -6,28 +6,28 @@ import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
-class PrimaryCareSettingsPage extends StatefulWidget {
+class PrimaryCareUpdatePage extends StatefulWidget {
 
-  const PrimaryCareSettingsPage({super.key});
+  PrimaryCareUpdatePage({super.key});
 
   @override
-  _PrimaryCareSettingsPageState createState() =>
-      _PrimaryCareSettingsPageState();
+  _PrimaryCareUpdatePageState createState() =>
+      _PrimaryCareUpdatePageState();
 }
 
-class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
+class _PrimaryCareUpdatePageState extends State<PrimaryCareUpdatePage> {
   bool isLoading = true; // 初期状態ではローディング中とみなします
   Map<String, dynamic>? clinicMaster;
   Map<String, dynamic>? hospitalMaster;
 
   final ValueNotifier<String?> selectedTypeNotifier =
-      ValueNotifier<String?>(null);
+  ValueNotifier<String?>(null);
   final ValueNotifier<String?> selectedPrefectureNotifier =
-      ValueNotifier<String?>(null);
+  ValueNotifier<String?>(null);
   final ValueNotifier<String?> selectedDistrictNotifier =
-      ValueNotifier<String?>(null);
+  ValueNotifier<String?>(null);
   final ValueNotifier<String?> selectedFacilityNotifier =
-      ValueNotifier<String?>(null);
+  ValueNotifier<String?>(null);
 
   String? selectedType = '病院';
   String? selectedPrefecture;
@@ -43,9 +43,9 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
 
   void loadJsonData() async {
     String clinicData =
-        await rootBundle.loadString('assets/json/clinicMaster.json');
+    await rootBundle.loadString('assets/json/clinicMaster.json');
     String hospitalData =
-        await rootBundle.loadString('assets/json/hospitalMaster.json');
+    await rootBundle.loadString('assets/json/hospitalMaster.json');
 
     setState(() {
       clinicMaster = json.decode(clinicData);
@@ -98,10 +98,10 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                         selectedFacilityId: selectedFacilityId!);
                     Future.delayed(
                       Duration(seconds: 2),
-                      () {
+                          () {
                         setState(() {
                           isLoading = false; // ローディング終了
-                          Navigator.pushReplacementNamed(context, '/rootPage');
+                          Navigator.of(context).pop();
                         });
                       },
                     );
@@ -139,7 +139,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                '最後にかかりつけに関する情報を入力しましょう',
+                'かかりつけ情報の更新をします',
                 style: kHeader2TextStyle,
               ),
             ),
@@ -193,12 +193,12 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                     label: "施設名を選択",
                     icon: Icons.local_hospital,
                     options: getMasterData()[selectedPrefecture!]
-                            [selectedDistrict!]
+                    [selectedDistrict!]
                         .map<String>((e) => e["name"] as String)
                         .toList(),
                     onSelectionChanged: (value) {
                       var facilityData = getMasterData()[selectedPrefecture!]
-                              [selectedDistrict!]
+                      [selectedDistrict!]
                           .firstWhere((e) => e["name"] == value);
                       setState(() {
                         selectedFacility = value; // 選択された施設の名前を保存
@@ -217,7 +217,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
               },
               leftText: '戻る',
               rightOnPressed: _showConfirmationDialog,
-              rightText: '登録完了',
+              rightText: '更新する',
             ),
           ],
         ),
