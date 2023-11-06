@@ -43,7 +43,8 @@ Future<void> savePrimaryCareFirestore({
   await FirebaseFirestore.instance
       .collection('primary_care')
       .doc(uid)
-      .set(data);
+      .collection('content')
+      .add(data);
 }
 
 
@@ -66,7 +67,8 @@ Future<void> saveInsulinTypeFirestore({
   await FirebaseFirestore.instance
       .collection('insulin_type')
       .doc(uid)
-      .set(data);
+      .collection('content')
+      .add(data);
 }
 
 Future<void> saveGlucoseInsulinToFirestore({
@@ -89,7 +91,8 @@ Future<void> saveGlucoseInsulinToFirestore({
   await FirebaseFirestore.instance
       .collection('glucose_insulin')
       .doc(uid)
-      .set(data);
+      .collection('content')
+      .add(data);
 }
 
 Future<void> saveContactFormFirestore({
@@ -101,32 +104,38 @@ Future<void> saveContactFormFirestore({
   String currentTime = DateTime.now().toIso8601String();
 
   final data = {
-    'uid' : uid,
     'timestamp': currentTime,
     'name': name,
     'email': email,
     'message': message,
   };
-  // 退会情報をFirestoreに保存
+
+  // ユーザーごとのサブコレクションに新しいドキュメントを追加
   await FirebaseFirestore.instance
       .collection('contact_form')
       .doc(uid)
-      .set(data);
+      .collection('content')
+      .add(data);
 }
 
 Future<void> saveActivateUserFirestore() async {
-  final uid = FirebaseAuth.instance.currentUser!.uid;
-  String currentTime = DateTime.now().toIso8601String();
+  try {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    String currentTime = DateTime.now().toIso8601String();
 
-  final user_status = {
-    'uid' : uid,
-    'activeStatusOn': currentTime,
-    'isActive': true,
-  };
-  await FirebaseFirestore.instance
-      .collection('user_status')
-      .doc(uid)
-      .set(user_status);
+    final user_status = {
+      'uid' : uid,
+      'activeStatusOn': currentTime,
+      'isActive': true,
+    };
+    await FirebaseFirestore.instance
+        .collection('user_status')
+        .doc(uid)
+        .set(user_status);
+  } catch (e) {
+    print("Error saving user status: $e");
+    throw e;
+  }
 }
 
 Future<void> saveDeactivateUserFirestore({

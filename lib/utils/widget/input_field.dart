@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
 
 class DecimalPointInputFormatter extends TextInputFormatter {
   final int decimal;
@@ -19,7 +18,7 @@ class DecimalPointInputFormatter extends TextInputFormatter {
       truncated = truncated.replaceAll('..', '.');
     }
 
-    int dotCount = ' '.allMatches(truncated).length;
+    int dotCount = '.'.allMatches(truncated).length;
     if (dotCount > 1) {
       truncated = truncated.substring(0, truncated.lastIndexOf('.'));
     }
@@ -53,52 +52,30 @@ class CustomFormWidgets {
     bool allowDecimal = false,
     int decimal = 1,
   }) {
-    final focusNode = FocusNode();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: kFormLabelTextStyle,
-        ),
-        const SizedBox(height: 5),
-        Row(
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                minHeight: 50.0,
-                maxHeight: 50.0,  // maxHeight制約を追加します
-                maxWidth: unit != null && maxWidth != null
-                    ? maxWidth.toDouble()
-                    : double.infinity,
-              ),
-              child: KeyboardActions(
-                config: KeyboardActionsConfig(
-                  keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
-                  keyboardBarColor: ColorConstants.fieldGrey,
-                  nextFocus: true,
-                  actions: [
-                    KeyboardActionsItem(
-                        focusNode: focusNode,
-                        toolbarButtons: [
-                              (node) {
-                            return GestureDetector(
-                              onTap: () => node.unfocus(),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 32.0),
-                                child: Text("Done", style: kKeyboardDoneTextStyle,),
-                              ),
-                            );
-                          }
-                        ]
-                    ),
-                  ],
+    return GestureDetector(
+      // Detecting taps on the whole screen.
+      onTap: () => primaryFocus?.unfocus(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: kFormLabelTextStyle,
+          ),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              Container(
+                constraints: BoxConstraints(
+                  minHeight: 50.0,
+                  maxHeight: 50.0,
+                  maxWidth: unit != null && maxWidth != null
+                      ? maxWidth.toDouble()
+                      : double.infinity,
                 ),
                 child: CupertinoTextField(
-                  focusNode: focusNode,
-                  maxLines: 1,  // maxLinesを1に設定します
-                  style: TextStyle(color: ColorConstants.pandaBlack,),
+                  maxLines: 1,
+                  style: TextStyle(color: ColorConstants.pandaBlack),
                   controller: controller,
                   placeholder: placeholder,
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -109,7 +86,8 @@ class CustomFormWidgets {
                   decoration: BoxDecoration(
                     color: ColorConstants.fieldGrey,
                   ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: allowDecimal),
+                  keyboardType: TextInputType.numberWithOptions(
+                      decimal: allowDecimal),
                   inputFormatters: [
                     allowDecimal
                         ? DecimalPointInputFormatter(decimal: decimal)
@@ -117,17 +95,18 @@ class CustomFormWidgets {
                   ],
                 ),
               ),
-            ),
-            if (unit != null) ...[
-              SizedBox(width: 5.0),
-              Text(unit),
+              if (unit != null) ...[
+                SizedBox(width: 5.0),
+                Text(unit),
+              ],
             ],
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
+
 
 Widget buildTextFieldWithIcon({
   required TextEditingController controller,

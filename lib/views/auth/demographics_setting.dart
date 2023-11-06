@@ -30,108 +30,112 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(36.0), // 余白を32.0に変更
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(height: 50),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'まずは基本的な情報を入力しましょう',
-                  style: kHeader2TextStyle,
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(36.0), // 余白を32.0に変更
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(height: 50),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'まずは基本的な情報を入力しましょう',
+                    style: kHeader2TextStyle,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 40),
-              buildTextFieldWithIcon(
-                  controller: userNameController,
-                  label: "ユーザー名（表示名）",
-                  icon: Icons.person,
-                  placeholder: "例：Dr.パンダ"),
-              const SizedBox(height: 10),
-              buildSelectFieldWithIcon(
-                label: "性別を選択",
-                icon: Icons.male,
-                options: ["男性", "女性"],
-                selectedValue: gender,
-                onValueChanged: (value) {
-                  setState(() {
-                    // この例では、選択したオプションを単に表示します。
-                    gender = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 10),
-              buildDateFieldWithIcon(
-                context: context,
-                label: "生年月日",
-                icon: Icons.calendar_today,
-                initialDate: DateTime(1980, 1, 1),
-                onDateChanged: (value) {
-                  setState(() {
-                    birthDate = value;
-                  });
-                },
-                selectedDateNotifier: birthDateNotifier, // ここでValueNotifierを渡します
-              ),
-              const SizedBox(height: 10),
-              CustomFormWidgets.buildNumberFieldWithIcon(
-                context: context,
-                controller: heightController,
-                label: "身長",
-                icon: Icons.height,
-                maxWidth: 160,
-                placeholder: "例：160.5",
-                unit: "cm",
-                allowDecimal: true, // <- 小数点を許可します。
-                decimal: 1, // 小数点以下1桁までを許容
-              ),
-              const SizedBox(height: 10),
-              CustomFormWidgets.buildNumberFieldWithIcon(
-                context: context,
-                controller: weightController,
-                label: "体重",
-                icon: Icons.scale,
-                maxWidth: 160,
-                placeholder: "例：60.5",
-                unit: "kg",
-                allowDecimal: true, // <- 小数点を許可します。
-                decimal: 1, // 小数点以下2桁までを許容
-              ),
-              const SizedBox(height: 30),
-              twinButton(
-                leftOnPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.pushReplacementNamed(context, '/authPage');
-                },
-                leftText: '戻る',
-                rightOnPressed: () async {
-                  if (userNameController.text.isNotEmpty &&
-                      gender != null &&
-                      birthDate != null &&
-                      heightController.text.isNotEmpty &&
-                      weightController.text.isNotEmpty) {
-                    await saveDemographicsToFirestore(
-                      username: userNameController.text,
-                      gender: gender,
-                      birthDate: birthDate,
-                      height: double.parse(heightController.text),
-                      weight: double.parse(weightController.text),
-                    );
-                    Navigator.pushNamed(context, '/insulinSettingsPage');
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('全ての情報を入力してください。'),
-                      ),
-                    );
-                  }
-                },
-                rightText: '次へ',
-              ),
-            ],
+                const SizedBox(height: 40),
+                buildTextFieldWithIcon(
+                    controller: userNameController,
+                    label: "ユーザー名（表示名）",
+                    icon: Icons.person,
+                    placeholder: "例：Dr.パンダ"),
+                const SizedBox(height: 10),
+                buildSelectFieldWithIcon(
+                  label: "性別を選択",
+                  icon: Icons.male,
+                  options: ["男性", "女性"],
+                  selectedValue: gender,
+                  onValueChanged: (value) {
+                    setState(() {
+                      // この例では、選択したオプションを単に表示します。
+                      gender = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                buildDateFieldWithIcon(
+                  context: context,
+                  label: "生年月日",
+                  icon: Icons.calendar_today,
+                  initialDate: DateTime(1980, 1, 1),
+                  onDateChanged: (value) {
+                    setState(() {
+                      birthDate = value;
+                    });
+                  },
+                  selectedDateNotifier: birthDateNotifier, // ここでValueNotifierを渡します
+                ),
+                const SizedBox(height: 10),
+                CustomFormWidgets.buildNumberFieldWithIcon(
+                  context: context,
+                  controller: heightController,
+                  label: "身長",
+                  icon: Icons.height,
+                  maxWidth: 160,
+                  placeholder: "例：160.5",
+                  unit: "cm",
+                  allowDecimal: true, // <- 小数点を許可します。
+                  decimal: 1, // 小数点以下1桁までを許容
+                ),
+                const SizedBox(height: 10),
+                CustomFormWidgets.buildNumberFieldWithIcon(
+                  context: context,
+                  controller: weightController,
+                  label: "体重",
+                  icon: Icons.scale,
+                  maxWidth: 160,
+                  placeholder: "例：60.5",
+                  unit: "kg",
+                  allowDecimal: true, // <- 小数点を許可します。
+                  decimal: 1, // 小数点以下2桁までを許容
+                ),
+                const SizedBox(height: 30),
+                twinButton(
+                  leftOnPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacementNamed(context, '/authPage');
+                  },
+                  leftText: '戻る',
+                  rightOnPressed: () async {
+                    if (userNameController.text.isNotEmpty &&
+                        gender != null &&
+                        birthDate != null &&
+                        heightController.text.isNotEmpty &&
+                        weightController.text.isNotEmpty) {
+                      await saveDemographicsToFirestore(
+                        username: userNameController.text,
+                        gender: gender,
+                        birthDate: birthDate,
+                        height: double.parse(heightController.text),
+                        weight: double.parse(weightController.text),
+                      );
+                      Navigator.pushNamed(context, '/insulinSettingsPage');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('全ての情報を入力してください。'),
+                        ),
+                      );
+                    }
+                  },
+                  rightText: '次へ',
+                ),
+              ],
+            ),
           ),
         ),
       ),
