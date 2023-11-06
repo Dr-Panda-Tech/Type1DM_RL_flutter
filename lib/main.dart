@@ -21,6 +21,7 @@ import 'package:type1dm_rl_flutter/views/news/news_page.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_page.dart';
 
 import 'package:type1dm_rl_flutter/views/profile/profile_setting/profile_edit_page.dart';
+import 'package:type1dm_rl_flutter/views/profile/profile_setting/primary_care_update_page.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_setting/external_service_page.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_setting/notification_setting_page.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_setting/language_setting_page.dart';
@@ -67,9 +68,8 @@ class MyApp extends StatelessWidget {
             const DemographicsSettingPage(),
         '/userImageSettingsPage': (context) => UserImageSettingPage(),
         '/insulinSettingsPage': (context) => InsulinSettingsPage(),
-        '/primaryCareSettingsPage': (context) => PrimaryCareSettingsPage(
-              fromSettings: false,
-            ),
+        '/primaryCareSettingsPage': (context) => PrimaryCareSettingsPage(),
+        '/primaryCareUpdatePage': (context) => PrimaryCareUpdatePage(),
         '/rootPage': (context) => const RootPage(),
         '/homePage': (context) => const HomePage(),
         '/graphPage': (context) => const GraphPage(),
