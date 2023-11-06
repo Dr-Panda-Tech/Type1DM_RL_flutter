@@ -13,11 +13,24 @@ class AuthService {
   // メールアドレスとパスワードで新規登録するメソッド
   Future<User?> signUpWithEmailAndPassword(String email, String password) async {
     try {
+      // ユーザーを新規作成または取得します。
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return result.user;
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
+      }
+
+      // ユーザーが既に存在する場合、そのユーザーの情報を返します。
+      if (e is FirebaseAuthException && e.code == 'email-already-in-use') {
+        try {
+          UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+          return result.user;
+        } catch (signInError) {
+          if (kDebugMode) {
+            print(signInError.toString());
+          }
+        }
       }
       return null;
     }

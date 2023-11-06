@@ -81,7 +81,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
             buildSelectFieldWithIcon(
               label: "クリニックか病院かを選択",
               icon: Icons.location_on,
-              options: ['クリニック', '病院'],
+              options: ['病院', 'クリニック'],
               onValueChanged: (value) {
                 setState(() {
                   selectedType = value;
@@ -153,7 +153,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                   await savePrimaryCareFirestore(
                     selectedFacilityId: selectedFacilityId!, // IDを関数に渡す
                   );
-                  Navigator.pushReplacementNamed(context, '/authPage');
+                  Navigator.pushReplacementNamed(context, '/rootPage');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
