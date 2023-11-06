@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
-class DemographicsSettingPage extends StatefulWidget {
-  const DemographicsSettingPage({super.key});
+class DemographicsMutableUpdatePage extends StatefulWidget {
+  const DemographicsMutableUpdatePage({super.key});
 
   @override
-  _DemographicsSettingPageState createState() =>
-      _DemographicsSettingPageState();
+  _DemographicsMutableUpdatePage createState() =>
+      _DemographicsMutableUpdatePage();
 }
 
-class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
+class _DemographicsMutableUpdatePage extends State<DemographicsMutableUpdatePage> {
   TextEditingController userNameController = TextEditingController();
   final ValueNotifier<String?> selectedGenderNotifier =
   ValueNotifier<String?>(null);
@@ -45,44 +44,11 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'まずは基本的な情報を入力しましょう',
+                    '身長・体重を更新します',
                     style: kHeader2TextStyle,
                   ),
                 ),
                 const SizedBox(height: 40),
-                buildTextFieldWithIcon(
-                    controller: userNameController,
-                    label: "ユーザー名（表示名）",
-                    icon: Icons.person,
-                    placeholder: "例：Dr.パンダ"),
-                const SizedBox(height: 10),
-                buildListSelectionWithIcon(
-                  context: context,
-                  label: "性別を選択",
-                  icon: Icons.male,
-                  options: ["男性", "女性"],
-                  onSelectionChanged: (value) {
-                    setState(() {
-                      // この例では、選択したオプションを単に表示します。
-                      gender = value;
-                    });
-                  },
-                  selectedValueNotifier: selectedGenderNotifier,
-                ),
-                const SizedBox(height: 10),
-                buildYearDateFieldWithIcon(
-                  context: context,
-                  label: "生年月日",
-                  icon: Icons.calendar_today,
-                  initialDate: DateTime(1980, 1, 1),
-                  onDateChanged: (value) {
-                    setState(() {
-                      birthDate = value;
-                    });
-                  },
-                  selectedDateNotifier: birthDateNotifier, // ここでValueNotifierを渡します
-                ),
-                const SizedBox(height: 10),
                 CustomFormWidgets.buildNumberFieldWithIcon(
                   context: context,
                   controller: heightController,
@@ -109,26 +75,17 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                 const SizedBox(height: 30),
                 twinButton(
                   leftOnPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                    Navigator.pushReplacementNamed(context, '/authPage');
+                    Navigator.pop(context);
                   },
                   leftText: '戻る',
                   rightOnPressed: () async {
-                    if (userNameController.text.isNotEmpty &&
-                        gender != null &&
-                        birthDate != null &&
-                        heightController.text.isNotEmpty &&
+                    if (heightController.text.isNotEmpty &&
                         weightController.text.isNotEmpty) {
-                      await saveDemographicsImmutableFirestore(
-                        username: userNameController.text,
-                        gender: gender,
-                        birthDate: birthDate,
-                      );
                       await saveDemographicsMutableFirestore(
                         height: double.parse(heightController.text),
                         weight: double.parse(weightController.text),
                       );
-                      Navigator.pushNamed(context, '/insulinSettingsPage');
+                      Navigator.pop(context);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -137,8 +94,9 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                       );
                     }
                   },
-                  rightText: '次へ',
+                  rightText: '更新する',
                 ),
+                const SizedBox(height: 150),
               ],
             ),
           ),

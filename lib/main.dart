@@ -14,7 +14,8 @@ import 'package:type1dm_rl_flutter/views/home/home_page.dart';
 import 'package:type1dm_rl_flutter/views/graph/graph_page.dart';
 import 'package:type1dm_rl_flutter/views/record/blood_test_page.dart';
 import 'package:type1dm_rl_flutter/views/record/record_page.dart';
-import 'package:type1dm_rl_flutter/views/record/insulin_page.dart';
+import 'package:type1dm_rl_flutter/views/record/insulin_update_page.dart';
+import 'package:type1dm_rl_flutter/views/record/demographics_mutable_update_page.dart';
 import 'package:type1dm_rl_flutter/views/news/news_page.dart';
 
 import 'package:type1dm_rl_flutter/views/profile/profile_page.dart';
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
         '/graphPage': (context) => const GraphPage(),
         '/recordPage': (context) => const RecordPage(),
         '/insulinUpdatePage': (context) => InsulinUpdatePage(),
+        '/demographicsMutableUpdatePage': (context) => DemographicsMutableUpdatePage(),
         '/bloodTestPage': (context) => BloodTestInputPage(),
         '/newsPage': (context) => NewsPage(),
         '/profilePage': (context) => const ProfilePage(),

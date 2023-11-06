@@ -13,13 +13,13 @@ class InsulinUpdatePage extends StatefulWidget {
 
 class _InsulinUpdatePageState extends State<InsulinUpdatePage> {
   final ValueNotifier<DateTime?> dmDiagnosedDateNotifier =
-      ValueNotifier<DateTime?>(null);
+  ValueNotifier<DateTime?>(null);
   final ValueNotifier<String?> rapidInsulinTypeNotifier =
-      ValueNotifier<String?>(null);
+  ValueNotifier<String?>(null);
   final ValueNotifier<String?> longActingInsulinTypeNotifier =
-      ValueNotifier<String?>(null);
+  ValueNotifier<String?>(null);
   final ValueNotifier<String?> longActingInsulinTimingNotifier =
-      ValueNotifier<String?>(null);
+  ValueNotifier<String?>(null);
   DateTime? dmDiagnosedDate;
   String? rapidInsulinType;
   String? longActingInsulinType;

@@ -28,6 +28,13 @@ class _RecordPageState extends State<RecordPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             customListTile(
+              leadingIcon: Icons.person,
+              titleText: '身長・体重を更新する',
+              onTapAction: () {
+                Navigator.pushNamed(context, '/demographicsMutableUpdatePage');
+              },
+            ),
+            customListTile(
               leadingIcon: Icons.bloodtype,
               titleText: '血液検査結果を入力する',
               onTapAction: () {

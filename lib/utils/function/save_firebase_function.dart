@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-Future<void> saveDemographicsToFirestore({
+Future<void> saveDemographicsImmutableFirestore({
   required String username,
   required String? gender,
   required DateTime? birthDate,
-  required double height,
-  required double weight,
 }) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -18,12 +16,31 @@ Future<void> saveDemographicsToFirestore({
     'username': username,
     'gender': gender,
     'birthDate': birthDate,
+  };
+
+  await FirebaseFirestore.instance
+      .collection('demographics_immutable')
+      .doc(uid)
+      .set(userData);
+}
+
+Future<void> saveDemographicsMutableFirestore({
+  required double height,
+  required double weight,
+}) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+
+  String currentTime = DateTime.now().toIso8601String();
+
+  final userData = {
+    'uid' : uid,
+    'timestamp': currentTime,
     'height': height,
     'weight': weight,
   };
 
   await FirebaseFirestore.instance
-      .collection('demographics')
+      .collection('demographics_mutable')
       .doc(uid)
       .set(userData);
 }
