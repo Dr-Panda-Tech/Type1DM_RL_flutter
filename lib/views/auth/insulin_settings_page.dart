@@ -14,7 +14,14 @@ class InsulinSettingsPage extends StatefulWidget {
 }
 
 class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
-  final ValueNotifier<DateTime?> dmDiagnosedDateNotifier = ValueNotifier<DateTime?>(null);
+  final ValueNotifier<DateTime?> dmDiagnosedDateNotifier =
+      ValueNotifier<DateTime?>(null);
+  final ValueNotifier<String?> rapidInsulinTypeNotifier =
+      ValueNotifier<String?>(null);
+  final ValueNotifier<String?> longActingInsulinTypeNotifier =
+      ValueNotifier<String?>(null);
+  final ValueNotifier<String?> longActingInsulinTimingNotifier =
+      ValueNotifier<String?>(null);
   DateTime? dmDiagnosedDate;
   String? rapidInsulinType;
   String? longActingInsulinType;
@@ -51,24 +58,25 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
               selectedDateNotifier: dmDiagnosedDateNotifier,
             ),
             const SizedBox(height: 10),
-            buildSelectFieldWithIcon(
+            buildListSelectionWithIcon(
+              context: context,
               label: "食前投与するインスリン",
               icon: Icons.flash_on,
               options: ['ノボラピッド', 'ヒューマリン'],
-              selectedValue: rapidInsulinType,
-              onValueChanged: (value) {
+              onSelectionChanged: (value) {
                 setState(() {
                   rapidInsulinType = value;
                 });
               },
+              selectedValueNotifier: rapidInsulinTypeNotifier,
             ),
             const SizedBox(height: 10),
-            buildSelectFieldWithIcon(
+            buildListSelectionWithIcon(
+              context: context,
               label: "時効型インスリン",
-              icon: Icons.access_time,
+              icon: Icons.timeline,
               options: ['未使用', 'グラルギン', 'トレシーバ'],
-              selectedValue: longActingInsulinType,
-              onValueChanged: (value) {
+              onSelectionChanged: (value) {
                 setState(() {
                   longActingInsulinType = value;
                   if (value == '未使用' || value == null) {
@@ -76,19 +84,21 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                   }
                 });
               },
+              selectedValueNotifier: longActingInsulinTypeNotifier,
             ),
             const SizedBox(height: 10),
             if (longActingInsulinType != null && longActingInsulinType != '未使用')
-              buildSelectFieldWithIcon(
+              buildListSelectionWithIcon(
+                context: context,
                 label: "時効型インスリンの使用タイミング",
-                icon: Icons.alarm,
+                icon: Icons.timer,
                 options: ['朝', '眠前'],
-                selectedValue: longActingInsulinTiming,
-                onValueChanged: (value) {
+                onSelectionChanged: (value) {
                   setState(() {
                     longActingInsulinTiming = value;
                   });
                 },
+                selectedValueNotifier: longActingInsulinTimingNotifier,
               ),
             const SizedBox(height: 30),
             twinButton(
@@ -98,7 +108,8 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
               leftText: '戻る',
               rightOnPressed: () async {
                 if (rapidInsulinType != null && longActingInsulinType != null) {
-                  if (longActingInsulinType != '未使用' && longActingInsulinTiming == null) {
+                  if (longActingInsulinType != '未使用' &&
+                      longActingInsulinTiming == null) {
                     // 時効型インスリンが「未使用」以外で、timingが未設定の場合のエラー
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -113,7 +124,7 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
                     longActingInsulinTiming: longActingInsulinTiming,
                   );
                   if (widget.fromSettings) {
-                    Navigator.pop(context);  // RecordPageに戻る
+                    Navigator.pop(context); // RecordPageに戻る
                   } else {
                     Navigator.pushNamed(context, '/primaryCareSettingsPage');
                   }

@@ -15,6 +15,8 @@ class DemographicsSettingPage extends StatefulWidget {
 
 class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
   TextEditingController userNameController = TextEditingController();
+  final ValueNotifier<String?> selectedGenderNotifier =
+  ValueNotifier<String?>(null);
   String? gender;
   DateTime? birthDate;
   final ValueNotifier<DateTime?> birthDateNotifier = ValueNotifier<DateTime?>(null);
@@ -54,17 +56,18 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                     icon: Icons.person,
                     placeholder: "例：Dr.パンダ"),
                 const SizedBox(height: 10),
-                buildSelectFieldWithIcon(
+                buildListSelectionWithIcon(
+                  context: context,
                   label: "性別を選択",
                   icon: Icons.male,
                   options: ["男性", "女性"],
-                  selectedValue: gender,
-                  onValueChanged: (value) {
+                  onSelectionChanged: (value) {
                     setState(() {
                       // この例では、選択したオプションを単に表示します。
                       gender = value;
                     });
                   },
+                  selectedValueNotifier: selectedGenderNotifier,
                 ),
                 const SizedBox(height: 10),
                 buildYearDateFieldWithIcon(
