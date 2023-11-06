@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -263,7 +262,7 @@ Widget buildListSelectionWithIcon({
       GestureDetector(
         onTap: () {
           String? tempSelectedValue = selectedValueNotifier.value ?? options[0];
-          int initialIndex = options.indexOf(tempSelectedValue ?? '');
+          int initialIndex = options.indexOf(tempSelectedValue);
           if (initialIndex == -1) initialIndex = 0;
 
           FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: initialIndex);
