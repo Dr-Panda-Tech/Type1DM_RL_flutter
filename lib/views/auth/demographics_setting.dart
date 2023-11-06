@@ -17,7 +17,7 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
   TextEditingController userNameController = TextEditingController();
   String? gender;
   DateTime? birthDate;
-  final ValueNotifier<DateTime> birthDateNotifier = ValueNotifier<DateTime>(DateTime.now());
+  final ValueNotifier<DateTime?> birthDateNotifier = ValueNotifier<DateTime?>(null);
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
 
@@ -67,7 +67,7 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                   },
                 ),
                 const SizedBox(height: 10),
-                buildDateFieldWithIcon(
+                buildYearDateFieldWithIcon(
                   context: context,
                   label: "生年月日",
                   icon: Icons.calendar_today,

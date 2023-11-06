@@ -190,16 +190,14 @@ Widget buildSelectFieldWithIcon({
   );
 }
 
-Widget buildDateFieldWithIcon({
+Widget buildYearDateFieldWithIcon({
   required BuildContext context,
   required String label,
   required IconData icon,
   required DateTime initialDate,
-  required ValueChanged<DateTime> onDateChanged,
-  required ValueNotifier<DateTime> selectedDateNotifier, // 追加
+  required ValueChanged<DateTime?> onDateChanged,
+  required ValueNotifier<DateTime?> selectedDateNotifier,
 }) {
-  DateTime tempDate = initialDate;
-
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -235,9 +233,9 @@ Widget buildDateFieldWithIcon({
                             style: kColorTextStyle,
                           ),
                           onPressed: () {
-                            selectedDateNotifier.value = tempDate; // ここでValueNotifierを更新
-                            onDateChanged(tempDate);
-                            print("Updated Date: ${selectedDateNotifier.value}"); // 確認のためのログ
+                            selectedDateNotifier.value = selectedDateNotifier.value;
+                            onDateChanged(selectedDateNotifier.value);
+                            print("Updated Date: ${selectedDateNotifier.value}");
                             Navigator.of(context).pop();
                           },
                         ),
@@ -246,11 +244,11 @@ Widget buildDateFieldWithIcon({
                     Expanded(
                       child: CupertinoDatePicker(
                         mode: CupertinoDatePickerMode.date,
-                        initialDateTime: initialDate,
+                        initialDateTime: selectedDateNotifier.value ?? initialDate,
                         minimumDate: DateTime(1900),
                         maximumDate: DateTime.now(),
                         onDateTimeChanged: (newDate) {
-                          tempDate = newDate;
+                          selectedDateNotifier.value = newDate;
                         },
                       ),
                     ),
@@ -271,11 +269,11 @@ Widget buildDateFieldWithIcon({
               Icon(icon),
               SizedBox(width: 16.0),
               Expanded(
-                child: ValueListenableBuilder<DateTime>(
+                child: ValueListenableBuilder<DateTime?>(
                   valueListenable: selectedDateNotifier,
                   builder: (context, date, child) {
                     return Text(
-                      date == initialDate ? '選択して下さい' : DateFormat('yyyy-MM-dd').format(date),
+                      date == null ? '選択して下さい' : DateFormat('yyyy-MM-dd').format(date),
                       style: kDateTextStyle,
                     );
                   },
@@ -288,3 +286,4 @@ Widget buildDateFieldWithIcon({
     ],
   );
 }
+

@@ -14,10 +14,7 @@ class InsulinSettingsPage extends StatefulWidget {
 }
 
 class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
-  final ValueNotifier<DateTime> dmDiagnosedDateNotifier =
-      ValueNotifier<DateTime>(
-    DateTime(1980, 1, 1),
-  );
+  final ValueNotifier<DateTime?> dmDiagnosedDateNotifier = ValueNotifier<DateTime?>(null);
   DateTime? dmDiagnosedDate;
   String? rapidInsulinType;
   String? longActingInsulinType;
@@ -41,7 +38,7 @@ class _InsulinSettingsPageState extends State<InsulinSettingsPage> {
               ),
             ),
             const SizedBox(height: 40),
-            buildDateFieldWithIcon(
+            buildYearDateFieldWithIcon(
               context: context,
               label: "1型糖尿病と診断された年",
               icon: Icons.calendar_today,

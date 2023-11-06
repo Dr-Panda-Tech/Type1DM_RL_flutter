@@ -35,9 +35,9 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
 
   void loadJsonData() async {
     String clinicData =
-    await rootBundle.loadString('assets/json/clinicMaster.json');
+        await rootBundle.loadString('assets/json/clinicMaster.json');
     String hospitalData =
-    await rootBundle.loadString('assets/json/hospitalMaster.json');
+        await rootBundle.loadString('assets/json/hospitalMaster.json');
 
     setState(() {
       clinicMaster = json.decode(clinicData);
@@ -51,6 +51,63 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
       return clinicMaster!;
     } else {
       return hospitalMaster!;
+    }
+  }
+
+  Future<void> _showConfirmationDialog() async {
+    if (selectedFacilityId != null) {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('確認'),
+            content: Text(
+              'この情報で登録しますか？',
+              style: kColorTextStyle,
+            ),
+            actions: [
+              TextButton(
+                child: Text(
+                  'キャンセル',
+                  style: kColorTextStyle,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                  child: Text(
+                    '登録する',
+                    style: kColorTextStyle,
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      isLoading = true;
+                    });
+                    await savePrimaryCareFirestore(
+                        selectedFacilityId: selectedFacilityId!);
+                    Future.delayed(
+                      Duration(seconds: 2),
+                      () {
+                        setState(() {
+                          isLoading = false; // ローディング終了
+                          Navigator.pushReplacementNamed(context, '/rootPage');
+                        });
+                      },
+                    );
+                  }),
+            ],
+          );
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('全ての情報を入力してください。'),
+        ),
+      );
     }
   }
 
@@ -124,12 +181,12 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                     label: "施設名を選択",
                     icon: Icons.local_hospital,
                     options: getMasterData()[selectedPrefecture!]
-                    [selectedDistrict!]
+                            [selectedDistrict!]
                         .map<String>((e) => e["name"] as String)
                         .toList(),
                     onValueChanged: (value) {
                       var facilityData = getMasterData()[selectedPrefecture!]
-                      [selectedDistrict!]
+                              [selectedDistrict!]
                           .firstWhere((e) => e["name"] == value);
                       setState(() {
                         selectedFacility = value; // 選択された施設の名前を保存
@@ -147,21 +204,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                 Navigator.pop(context);
               },
               leftText: '戻る',
-              rightOnPressed: () async {
-                if (selectedFacilityId != null) {
-                  // selectedFacilityIdを確認
-                  await savePrimaryCareFirestore(
-                    selectedFacilityId: selectedFacilityId!, // IDを関数に渡す
-                  );
-                  Navigator.pushReplacementNamed(context, '/rootPage');
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('全ての情報を入力してください。'),
-                    ),
-                  );
-                }
-              },
+              rightOnPressed: _showConfirmationDialog,
               rightText: '登録完了',
             ),
           ],
