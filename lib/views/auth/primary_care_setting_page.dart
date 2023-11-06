@@ -21,6 +21,15 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
   Map<String, dynamic>? clinicMaster;
   Map<String, dynamic>? hospitalMaster;
 
+  final ValueNotifier<String?> selectedTypeNotifier =
+      ValueNotifier<String?>(null);
+  final ValueNotifier<String?> selectedPrefectureNotifier =
+      ValueNotifier<String?>(null);
+  final ValueNotifier<String?> selectedDistrictNotifier =
+      ValueNotifier<String?>(null);
+  final ValueNotifier<String?> selectedFacilityNotifier =
+      ValueNotifier<String?>(null);
+
   String? selectedType = '病院';
   String? selectedPrefecture;
   String? selectedDistrict;
@@ -135,11 +144,12 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                 style: kHeader2TextStyle,
               ),
             ),
-            buildSelectFieldWithIcon(
+            buildListSelectionWithIcon(
+              context: context,
               label: "クリニックか病院かを選択",
               icon: Icons.location_on,
               options: ['病院', 'クリニック'],
-              onValueChanged: (value) {
+              onSelectionChanged: (value) {
                 setState(() {
                   selectedType = value;
                   selectedPrefecture = null;
@@ -147,44 +157,47 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                   selectedFacility = null;
                 });
               },
-              selectedValue: selectedType,
+              selectedValueNotifier: selectedTypeNotifier,
             ),
             if (selectedType != null) ...[
-              buildSelectFieldWithIcon(
+              buildListSelectionWithIcon(
+                context: context,
                 label: "都道府県を選択",
                 icon: Icons.location_city,
                 options: getMasterData().keys.toList(),
-                onValueChanged: (value) {
+                onSelectionChanged: (value) {
                   setState(() {
                     selectedPrefecture = value;
                     selectedDistrict = null;
                     selectedFacility = null;
                   });
                 },
-                selectedValue: selectedPrefecture,
+                selectedValueNotifier: selectedPrefectureNotifier,
               ),
               if (selectedPrefecture != null) ...[
-                buildSelectFieldWithIcon(
+                buildListSelectionWithIcon(
+                  context: context,
                   label: "地区を選択",
                   icon: Icons.map,
                   options: getMasterData()[selectedPrefecture!].keys.toList(),
-                  onValueChanged: (value) {
+                  onSelectionChanged: (value) {
                     setState(() {
                       selectedDistrict = value;
                       selectedFacility = null;
                     });
                   },
-                  selectedValue: selectedDistrict,
+                  selectedValueNotifier: selectedDistrictNotifier,
                 ),
                 if (selectedDistrict != null) ...[
-                  buildSelectFieldWithIcon(
+                  buildListSelectionWithIcon(
+                    context: context,
                     label: "施設名を選択",
                     icon: Icons.local_hospital,
                     options: getMasterData()[selectedPrefecture!]
                             [selectedDistrict!]
                         .map<String>((e) => e["name"] as String)
                         .toList(),
-                    onValueChanged: (value) {
+                    onSelectionChanged: (value) {
                       var facilityData = getMasterData()[selectedPrefecture!]
                               [selectedDistrict!]
                           .firstWhere((e) => e["name"] == value);
@@ -193,7 +206,7 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                         selectedFacilityId = facilityData["id"]; // ここでIDを設定
                       });
                     },
-                    selectedValue: selectedFacility,
+                    selectedValueNotifier: selectedFacilityNotifier,
                   ),
                 ],
               ],

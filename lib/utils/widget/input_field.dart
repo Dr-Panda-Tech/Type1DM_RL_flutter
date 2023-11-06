@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -84,6 +85,7 @@ class CustomFormWidgets {
                     child: Icon(icon),
                   ),
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),  // この行を追加
                     color: ColorConstants.fieldGrey,
                   ),
                   keyboardType: TextInputType.numberWithOptions(
@@ -134,55 +136,8 @@ Widget buildTextFieldWithIcon({
             child: Icon(icon),
           ),
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),  // この行を追加
             color: ColorConstants.fieldGrey,
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-Widget buildSelectFieldWithIcon({
-  required String label,
-  required IconData icon,
-  required List<String> options,
-  required Function(String?) onValueChanged,
-  String? selectedValue,
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: kFormLabelTextStyle,
-      ),
-      const SizedBox(height: 5),
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-        constraints: BoxConstraints(minHeight: 50.0, maxHeight: 50.0), // この行を追加
-        decoration: BoxDecoration(
-          color: ColorConstants.fieldGrey,
-        ),
-        child: DropdownButtonHideUnderline(
-          child: Row(
-            children: [
-              Icon(icon),
-              SizedBox(width: 16.0),
-              Expanded(
-                child: DropdownButton<String>(
-                  value: selectedValue,
-                  items: options.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: onValueChanged,
-                  isExpanded: true,
-                  icon: SizedBox.shrink(),
-                ),
-              ),
-            ],
           ),
         ),
       ),
@@ -208,6 +163,7 @@ Widget buildYearDateFieldWithIcon({
       const SizedBox(height: 5),
       GestureDetector(
         onTap: () {
+          DateTime? tempSelectedDate = selectedDateNotifier.value ?? initialDate;
           showModalBottomSheet(
             context: context,
             builder: (BuildContext builder) {
@@ -233,9 +189,8 @@ Widget buildYearDateFieldWithIcon({
                             style: kColorTextStyle,
                           ),
                           onPressed: () {
-                            selectedDateNotifier.value = selectedDateNotifier.value;
-                            onDateChanged(selectedDateNotifier.value);
-                            print("Updated Date: ${selectedDateNotifier.value}");
+                            selectedDateNotifier.value = tempSelectedDate;
+                            onDateChanged(tempSelectedDate);
                             Navigator.of(context).pop();
                           },
                         ),
@@ -248,7 +203,7 @@ Widget buildYearDateFieldWithIcon({
                         minimumDate: DateTime(1900),
                         maximumDate: DateTime.now(),
                         onDateTimeChanged: (newDate) {
-                          selectedDateNotifier.value = newDate;
+                          tempSelectedDate = newDate;
                         },
                       ),
                     ),
@@ -262,6 +217,7 @@ Widget buildYearDateFieldWithIcon({
           constraints: BoxConstraints(minHeight: 50.0, maxHeight: 50.0),
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),  // この行を追加
             color: ColorConstants.fieldGrey,
           ),
           child: Row(
@@ -287,3 +243,98 @@ Widget buildYearDateFieldWithIcon({
   );
 }
 
+
+Widget buildListSelectionWithIcon({
+  required BuildContext context,
+  required String label,
+  required IconData icon,
+  required List<String> options,
+  required ValueChanged<String?> onSelectionChanged,
+  required ValueNotifier<String?> selectedValueNotifier,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: kFormLabelTextStyle,
+      ),
+      const SizedBox(height: 5),
+      GestureDetector(
+        onTap: () {
+          String? tempSelectedValue = selectedValueNotifier.value ?? options[0];
+          int initialIndex = options.indexOf(tempSelectedValue ?? '');
+          if (initialIndex == -1) initialIndex = 0;
+
+          FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: initialIndex);
+
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext builder) {
+              return Container(
+                height: MediaQuery.of(context).copyWith().size.height / 3,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CupertinoButton(
+                          child: Text("キャンセル",style: kColorTextStyle,),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        CupertinoButton(
+                          child: Text("確定",style: kColorTextStyle,),
+                          onPressed: () {
+                            selectedValueNotifier.value = tempSelectedValue;
+                            onSelectionChanged(tempSelectedValue);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: CupertinoPicker(
+                        scrollController: scrollController,
+                        onSelectedItemChanged: (int index) {
+                          tempSelectedValue = options[index];
+                        },
+                        itemExtent: 32.0,
+                        children: options.map((String value) {
+                          return Text(value);
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: Container(
+          constraints: BoxConstraints(minHeight: 50.0, maxHeight: 50.0),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            color: ColorConstants.fieldGrey,
+          ),
+          child: Row(
+            children: [
+              Icon(icon),
+              SizedBox(width: 16.0),
+              Expanded(
+                child: ValueListenableBuilder<String?>(
+                  valueListenable: selectedValueNotifier,
+                  builder: (context, value, child) {
+                    return Text(value ?? '選択して下さい');
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
+}
