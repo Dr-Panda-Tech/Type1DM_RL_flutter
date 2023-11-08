@@ -110,10 +110,27 @@ class _UserProfileCardState extends State<UserProfileCard> {
                         'かかりつけ:',
                         style: kMiniCardTextStyle,
                       ), // ラベルのみの行ルのみの行
-                      Text(
-                          '${profileFunc.getFacilityNameFromTypeAndId(user.uid)}', // 実際のメールアドレスの行
-                          style: kMediumCardTextStyle,
-                          overflow: TextOverflow.ellipsis),
+                      FutureBuilder<String?>(
+                        future: profileFunc.getFacilityNameFromTypeAndId(user.uid), // 非同期関数の呼び出し
+                        builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                          // 非同期操作がまだ終わっていない場合
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator(); // ローディングインジケーターを表示
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}'); // エラーメッセージを表示
+                          } else if (snapshot.hasData) {
+                            // データがある場合はそのデータを表示
+                            return Text(
+                              snapshot.data ?? 'No data', // nullの場合は'No data'と表示
+                              style: kMediumCardTextStyle,
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          } else {
+                            // データがない場合
+                            return Text('No data available'); // 'No data available'と表示
+                          }
+                        },
+                      ),
                     ],
                   ),
                 )
