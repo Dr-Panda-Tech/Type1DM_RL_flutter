@@ -10,11 +10,13 @@ class ImageHandler {
 
   ImageHandler(this.context);
 
-  Future<File?> pickAndSetImage() async {
-    final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
+  // ImageHandler クラス内
+  Future<File?> pickAndSetImage(ImageSource source) async {
+    final XFile? pickedImage = await _picker.pickImage(source: source);
     if (pickedImage != null) {
       imageFile = File(pickedImage.path);
+      // UIを更新するためにsetStateを呼び出すことを忘れないでください
+      // 例: setState(() {});
     }
     return imageFile;
   }

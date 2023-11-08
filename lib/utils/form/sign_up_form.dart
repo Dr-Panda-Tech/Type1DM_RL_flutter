@@ -53,7 +53,7 @@ class _SignUpFormState extends State<SignUpForm> {
       if (user != null) {
         // Check if user exists in the demographics table
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('demographics_immutable')
+            .collection('primary_care')
             .doc(user.uid)
             .get();
 
