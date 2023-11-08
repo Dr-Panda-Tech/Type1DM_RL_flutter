@@ -37,6 +37,10 @@
             <string>Sign in with your Apple ID to access your account.</string>
 	<key>CFBundleName</key>
 	<string>type1dm_rl_flutter</string>
+	<key>NSCameraUsageDescription</key>
+    <string>プロフィール画像を撮影するためにカメラを使用します。</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>プロフィールに設定する画像を選択するためにフォトライブラリへのアクセスを要求します。</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

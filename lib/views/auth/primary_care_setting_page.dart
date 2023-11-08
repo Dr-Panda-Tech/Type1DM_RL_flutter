@@ -7,7 +7,6 @@ import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
 class PrimaryCareSettingsPage extends StatefulWidget {
-
   const PrimaryCareSettingsPage({super.key});
 
   @override
@@ -85,27 +84,23 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                 },
               ),
               TextButton(
-                  child: Text(
-                    '登録する',
-                    style: kColorTextStyle,
-                  ),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      isLoading = true;
-                    });
-                    await savePrimaryCareFirestore(
-                        selectedFacilityId: selectedFacilityId!);
-                    Future.delayed(
-                      Duration(seconds: 2),
-                      () {
-                        setState(() {
-                          isLoading = false; // ローディング終了
-                          Navigator.pushReplacementNamed(context, '/rootPage');
-                        });
-                      },
-                    );
-                  }),
+                child: Text('登録する', style: kColorTextStyle),
+                onPressed: () async {
+                  // ダイアログを閉じる
+                  Navigator.of(context, rootNavigator: true).pop();
+                  // ローディングプロセスを開始
+                  if (!mounted) return;
+                  setState(() => isLoading = true);
+                  // 非同期操作を実行
+                  await savePrimaryCareFirestore(selectedFacilityId: selectedFacilityId!);
+                  // ウィジェットがまだマウントされているかをチェック
+                  if (!mounted) return;
+                  // ローディングプロセスを停止
+                  setState(() => isLoading = false);
+                  // ウィジェットがまだマウントされていれば新しいルートにナビゲート
+                  Navigator.of(context, rootNavigator: true).pushReplacementNamed('/rootPage');
+                },
+              ),
             ],
           );
         },

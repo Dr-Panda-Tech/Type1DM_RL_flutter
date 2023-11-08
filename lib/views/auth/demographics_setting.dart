@@ -128,7 +128,7 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                         height: double.parse(heightController.text),
                         weight: double.parse(weightController.text),
                       );
-                      Navigator.pushNamed(context, '/insulinSettingsPage');
+                      Navigator.pushNamed(context, '/userImageSettingsPage');
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
