@@ -165,7 +165,7 @@ class _SignInFormState extends State<SignInForm> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, bottom: 24),
-                child: buildButton(
+                child: mainButton(
                   onPressed: () => signIn(context),
                   text: 'Sign in',
                   icon: Icons.login,

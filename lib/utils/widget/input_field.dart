@@ -106,6 +106,71 @@ class CustomFormWidgets {
       ),
     );
   }
+
+  static Widget buildNumberField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required String label,
+    required String placeholder,
+    int? maxWidth,
+    String? unit,
+    bool allowDecimal = false,
+    int decimal = 1,
+  }) {
+    return GestureDetector(
+      // Detecting taps on the whole screen.
+      onTap: () => primaryFocus?.unfocus(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              Container(
+                constraints: BoxConstraints(
+                  minHeight: 50.0,
+                  maxHeight: 50.0,
+                  maxWidth: unit != null && maxWidth != null
+                      ? maxWidth.toDouble()
+                      : double.infinity,
+                ),
+                child: CupertinoTextField(
+                  maxLines: 1,
+                  style: TextStyle(color: ColorConstants.pandaBlack),
+                  controller: controller,
+                  placeholder: placeholder,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  prefix: Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                    child: Text(
+                      label,
+                      style: kFormLabelTextStyle,
+                    ),
+                  ),
+                  textAlign: TextAlign.center, // テキストを右寄せにする
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),  // この行を追加
+                    color: ColorConstants.fieldGrey,
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(
+                      decimal: allowDecimal),
+                  inputFormatters: [
+                    allowDecimal
+                        ? DecimalPointInputFormatter(decimal: decimal)
+                        : FilteringTextInputFormatter.digitsOnly,
+                  ],
+                ),
+              ),
+              if (unit != null) ...[
+                SizedBox(width: 5.0),
+                Text(unit),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 
