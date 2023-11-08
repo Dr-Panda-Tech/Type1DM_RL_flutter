@@ -63,6 +63,7 @@ Future<void> saveHeightWeightFirestore({
 }
 
 Future<void> savePrimaryCareFirestore({
+  required String selectedType, // 施設の一意のIDだけを引数として受け取る
   required String selectedFacilityId, // 施設の一意のIDだけを引数として受け取る
 }) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -71,6 +72,7 @@ Future<void> savePrimaryCareFirestore({
   final data = {
     'uid' : uid,
     'timestamp': currentTime,
+    'facility_type': selectedType, // IDだけを保存
     'facility_id': selectedFacilityId, // IDだけを保存
   };
 

@@ -92,7 +92,10 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                   if (!mounted) return;
                   setState(() => isLoading = true);
                   // 非同期操作を実行
-                  await savePrimaryCareFirestore(selectedFacilityId: selectedFacilityId!);
+                  await savePrimaryCareFirestore(
+                      selectedType: selectedType!,
+                      selectedFacilityId: selectedFacilityId!
+                  );
                   // ウィジェットがまだマウントされているかをチェック
                   if (!mounted) return;
                   // ウィジェットがまだマウントされていれば新しいルートにナビゲート

@@ -99,19 +99,20 @@ class _UserProfileCardState extends State<UserProfileCard> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'ユーザーID:',
-                        style: kMiniCardTextStyle,
-                      ), // ラベルのみの行
-                      Text('${user.uid}', // 実際のユーザーIDの行
-                          style: kMediumCardTextStyle,
-                          overflow: TextOverflow.ellipsis),
-                      const SizedBox(height: 4),
-                      const Text(
                         'メールアドレス:',
                         style: kMiniCardTextStyle,
                       ), // ラベルのみの行ルのみの行
                       Text(
                           '${profileFunc.maskEmail(user.email)}', // 実際のメールアドレスの行
+                          style: kMediumCardTextStyle,
+                          overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'かかりつけ:',
+                        style: kMiniCardTextStyle,
+                      ), // ラベルのみの行ルのみの行
+                      Text(
+                          '${profileFunc.getFacilityNameFromTypeAndId(user.uid)}', // 実際のメールアドレスの行
                           style: kMediumCardTextStyle,
                           overflow: TextOverflow.ellipsis),
                     ],
