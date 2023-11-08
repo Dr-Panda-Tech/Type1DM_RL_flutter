@@ -63,14 +63,20 @@ class _UserImageSettingPageState extends State<UserImageSettingPage> {
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <Widget>[
           CupertinoActionSheetAction(
-            child: Text('カメラで撮影'),
+            child: Text(
+              'カメラで撮影',
+              style: kColorTextStyle,
+            ),
             onPressed: () {
               Navigator.pop(context);
               _pickImage(ImageSource.camera);
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('ライブラリから選択'),
+            child: Text(
+              'ライブラリから選択',
+              style: kColorTextStyle,
+            ),
             onPressed: () {
               Navigator.pop(context);
               _pickImage(ImageSource.gallery);
@@ -78,7 +84,10 @@ class _UserImageSettingPageState extends State<UserImageSettingPage> {
           )
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text('キャンセル'),
+          child: Text(
+            'キャンセル',
+            style: kColorTextStyle,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },

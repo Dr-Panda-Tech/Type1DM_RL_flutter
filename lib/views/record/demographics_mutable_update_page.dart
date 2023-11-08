@@ -81,7 +81,7 @@ class _DemographicsMutableUpdatePage extends State<DemographicsMutableUpdatePage
                   rightOnPressed: () async {
                     if (heightController.text.isNotEmpty &&
                         weightController.text.isNotEmpty) {
-                      await saveDemographicsMutableFirestore(
+                      await saveHeightWeightFirestore(
                         height: double.parse(heightController.text),
                         weight: double.parse(weightController.text),
                       );

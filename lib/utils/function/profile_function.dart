@@ -14,7 +14,7 @@ class ProfileFunction {
 
   Future<String?> getUsername(String uid) async {
     final doc = await FirebaseFirestore.instance
-        .collection('user_detail')
+        .collection('user_name')
         .doc(uid)
         .get();
     if (doc.exists) {

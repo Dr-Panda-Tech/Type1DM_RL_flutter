@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> saveDemographicsImmutableFirestore({
-  required String username,
   required String? gender,
   required DateTime? birthDate,
 }) async {
@@ -13,18 +12,36 @@ Future<void> saveDemographicsImmutableFirestore({
   final userData = {
     'uid' : uid,
     'timestamp': currentTime,
-    'username': username,
     'gender': gender,
     'birthDate': birthDate,
   };
 
   await FirebaseFirestore.instance
-      .collection('demographics_immutable')
+      .collection('demographics')
       .doc(uid)
       .set(userData);
 }
 
-Future<void> saveDemographicsMutableFirestore({
+Future<void> saveUsernameFirestore({
+  required String username,
+}) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+
+  String currentTime = DateTime.now().toIso8601String();
+
+  final userData = {
+    'uid' : uid,
+    'timestamp': currentTime,
+    'username': username,
+  };
+
+  await FirebaseFirestore.instance
+      .collection('user_name')
+      .doc(uid)
+      .set(userData);
+}
+
+Future<void> saveHeightWeightFirestore({
   required double height,
   required double weight,
 }) async {
@@ -40,7 +57,7 @@ Future<void> saveDemographicsMutableFirestore({
   };
 
   await FirebaseFirestore.instance
-      .collection('demographics_mutable')
+      .collection('physique')
       .doc(uid)
       .set(userData);
 }

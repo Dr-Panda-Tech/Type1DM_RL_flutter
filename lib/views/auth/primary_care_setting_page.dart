@@ -95,10 +95,10 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
                   await savePrimaryCareFirestore(selectedFacilityId: selectedFacilityId!);
                   // ウィジェットがまだマウントされているかをチェック
                   if (!mounted) return;
-                  // ローディングプロセスを停止
-                  setState(() => isLoading = false);
                   // ウィジェットがまだマウントされていれば新しいルートにナビゲート
                   Navigator.of(context, rootNavigator: true).pushReplacementNamed('/rootPage');
+                  // ローディングプロセスを停止
+                  setState(() => isLoading = false);
                 },
               ),
             ],
