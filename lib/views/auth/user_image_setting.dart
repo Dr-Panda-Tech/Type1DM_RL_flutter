@@ -1,12 +1,9 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as Path;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
+import 'package:type1dm_rl_flutter/utils/function/image_handler_function.dart';
 
 class UserImageSettingPage extends StatefulWidget {
   UserImageSettingPage({super.key});
@@ -17,74 +14,11 @@ class UserImageSettingPage extends StatefulWidget {
 
 class _UserImageSettingPageState extends State<UserImageSettingPage> {
   XFile? _image;
-  final String uid = FirebaseAuth.instance.currentUser!.uid;
-  Future<void> _pickImage(ImageSource source) async {
-    final ImagePicker _picker = ImagePicker();
-    // 画像をピック
-    final pickedFile = await _picker.pickImage(
-      source: source,
-      preferredCameraDevice: CameraDevice.front,
-    );
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = pickedFile;
-      });
-      // Firebase Storageにアップロード
-      _uploadFile(pickedFile);
-    }
-  }
-
-  Future<void> _uploadFile(XFile file) async {
-    final filePath = file.path;
-    // 拡張子をチェック
-    final extension = Path.extension(filePath).toLowerCase();
-    if (!['.png', '.jpg', '.jpeg', '.JPEG', '.hex'].contains(extension)) {
-      // 不正なファイル形式のエラーを表示
-      return;
-    }
-
-    File fileToUpload = File(filePath); // Create a File instance from the path
-    try {
-      // Use fileToUpload to upload the file
-      await FirebaseStorage.instance
-          .ref(
-              'userImages/$uid$extension') // Use the UID and the file extension
-          .putFile(fileToUpload); // Use the File instance here
-      // 成功した場合の処理
-    } catch (e) {
-      // エラーを処理
-    }
-  }
-
-  void _showImageSourceActionSheet() {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <Widget>[
-          CupertinoActionSheetAction(
-            child: Text('カメラで撮影'),
-            onPressed: () {
-              Navigator.pop(context);
-              _pickImage(ImageSource.camera);
-            },
-          ),
-          CupertinoActionSheetAction(
-            child: Text('ライブラリから選択'),
-            onPressed: () {
-              Navigator.pop(context);
-              _pickImage(ImageSource.gallery);
-            },
-          )
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          child: Text('キャンセル'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-    );
+  void _handleImageSelection(ImageSource source) async {
+    final pickedImage = await pickImage(context, source);
+    setState(() {
+      _image = pickedImage;
+    });
   }
 
   @override
@@ -107,7 +41,7 @@ class _UserImageSettingPageState extends State<UserImageSettingPage> {
             const SizedBox(height: 40),
             Center(
               child: GestureDetector(
-                onTap: _showImageSourceActionSheet,
+                onTap: () => showImageSourceActionSheet(context, _handleImageSelection),
                 child: Stack(
                   alignment: Alignment.bottomRight,
                   children: <Widget>[

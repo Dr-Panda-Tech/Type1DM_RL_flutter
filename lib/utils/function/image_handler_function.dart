@@ -1,46 +1,90 @@
 import 'dart:io';
+import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:path/path.dart' as Path;
 
-class ImageHandler {
-  final BuildContext context;
-  File? imageFile; // 画像ファイルを保存するためのプロパティ
+Future<XFile?> pickImage(BuildContext context, ImageSource source) async {
   final ImagePicker _picker = ImagePicker();
+  final pickedFile = await _picker.pickImage(
+    source: source,
+    preferredCameraDevice: CameraDevice.front,
+  );
 
-  ImageHandler(this.context);
+  if (pickedFile != null) {
+    // Firebase Storageにアップロード
+    await uploadFile(context, pickedFile);
+    return pickedFile;
+  }
+  return null;
+}
 
-  // ImageHandler クラス内
-  Future<File?> pickAndSetImage(ImageSource source) async {
-    final XFile? pickedImage = await _picker.pickImage(source: source);
-    if (pickedImage != null) {
-      imageFile = File(pickedImage.path);
-      // UIを更新するためにsetStateを呼び出すことを忘れないでください
-      // 例: setState(() {});
-    }
-    return imageFile;
+Future<void> uploadFile(BuildContext context, XFile file) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  final filePath = file.path;
+  final extension = Path.extension(filePath).toLowerCase();
+
+  if (!['.png', '.jpg', '.jpeg', '.JPEG', '.hex'].contains(extension)) {
+    // 不正なファイル形式のエラーを表示
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('不正なファイル形式です。')),
+    );
+    return;
   }
 
-  Future<void> uploadCurrentImage() async {
-    if (imageFile != null) {
-      try {
-        String extension = imageFile!.path.split('.').last;
-        await FirebaseStorage.instance
-            .ref('userImages/${DateTime.now().toIso8601String()}.$extension')
-            .putFile(imageFile!);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('画像が正常にアップロードされました'),
-          ),
-        );
-      } catch (e) {
-        print(e);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('画像のアップロードに失敗しました'),
-          ),
-        );
-      }
-    }
+  File fileToUpload = File(filePath);
+  try {
+    await FirebaseStorage.instance
+        .ref('userImages/$uid$extension')
+        .putFile(fileToUpload);
+    // 成功した場合の処理
+  } catch (e) {
+    // エラーを処理
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('画像のアップロードに失敗しました。')),
+    );
   }
+}
+
+void showImageSourceActionSheet(
+    BuildContext context, Function(ImageSource) onImageSelected) {
+  showCupertinoModalPopup(
+    context: context,
+    builder: (BuildContext context) => CupertinoActionSheet(
+      actions: <Widget>[
+        CupertinoActionSheetAction(
+          child: Text(
+            'カメラで撮影',
+            style: kColorTextStyle,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            onImageSelected(ImageSource.camera);
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: Text(
+            'ライブラリから選択',
+            style: kColorTextStyle,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            onImageSelected(ImageSource.gallery);
+          },
+        )
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: Text(
+          'キャンセル',
+          style: kColorTextStyle,
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+    ),
+  );
 }

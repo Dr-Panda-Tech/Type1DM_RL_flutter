@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
 
 class OtherSettingsPage extends StatelessWidget {
   @override

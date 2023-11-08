@@ -120,11 +120,13 @@ class _DemographicsSettingPageState extends State<DemographicsSettingPage> {
                         heightController.text.isNotEmpty &&
                         weightController.text.isNotEmpty) {
                       await saveDemographicsImmutableFirestore(
-                        username: userNameController.text,
                         gender: gender,
                         birthDate: birthDate,
                       );
-                      await saveDemographicsMutableFirestore(
+                      await saveUsernameFirestore(
+                        username: userNameController.text,
+                      );
+                      await saveHeightWeightFirestore(
                         height: double.parse(heightController.text),
                         weight: double.parse(weightController.text),
                       );
