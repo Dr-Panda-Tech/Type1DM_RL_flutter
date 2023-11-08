@@ -194,7 +194,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         preferredSize: const Size.fromHeight(1.0),
         child: Divider(
           height: 1,
-          color: Colors.grey,
+          color: ColorConstants.grey,
         ),
       ),
     );

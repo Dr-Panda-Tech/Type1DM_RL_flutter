@@ -48,14 +48,14 @@ class _BloodTestInputPageState extends State<BloodTestInputPage> {
       appBar: CustomAppBar(titleText: '血液検査結果の入力'),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(36.0),
           child: Form(
             child: Column(
               children: [
                 // 日付選択
                 buildYearDateFieldWithIcon(
                   context: context,
-                  label: "生年月日",
+                  label: "検査日",
                   icon: Icons.calendar_today,
                   initialDate: DateTime(1980, 1, 1),
                   onDateChanged: (value) {
@@ -70,13 +70,13 @@ class _BloodTestInputPageState extends State<BloodTestInputPage> {
                 _buildTextFormField('Sodium (Na)'),
                 _buildTextFormField('Potassium (K)'),
                 _buildTextFormField('Potassium (Cl)'),
-                _buildTextFormField('Potassium (WBC)'),
                 _buildTextFormField('Potassium (Hb)'),
                 _buildTextFormField('Potassium (PLT)'),
+                _buildTextFormField('Potassium (WBC)'),
                 _buildTextFormField('Potassium (HbA1c)'),
+                _buildTextFormField('Potassium (UA)'),
                 _buildTextFormField('Potassium (BUN)'),
                 _buildTextFormField('Potassium (CRE)'),
-                _buildTextFormField('Potassium (UA)'),
                 _buildTextFormField('Potassium (eGFR)'),
                 ElevatedButton(
                   onPressed: () {

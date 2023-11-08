@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 
 class WithdrawalPage extends StatefulWidget {
   @override

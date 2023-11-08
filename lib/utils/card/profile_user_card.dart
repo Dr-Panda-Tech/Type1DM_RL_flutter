@@ -4,8 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
-
-import '../function/image_handler_function.dart';
+import 'package:type1dm_rl_flutter/utils/function/image_handler_function.dart';
 
 class UserProfileCard extends StatefulWidget {
   UserProfileCard({super.key});

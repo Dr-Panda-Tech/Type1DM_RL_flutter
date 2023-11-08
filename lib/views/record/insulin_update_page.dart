@@ -35,7 +35,6 @@ class _InsulinUpdatePageState extends State<InsulinUpdatePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 40),
             buildListSelectionWithIcon(
               context: context,
               label: "食前投与するインスリン",

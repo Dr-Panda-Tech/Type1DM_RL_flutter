@@ -41,7 +41,6 @@ class _DemographicsMutableUpdatePage extends State<DemographicsMutableUpdatePage
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 40),
                 CustomFormWidgets.buildNumberFieldWithIcon(
                   context: context,
                   controller: heightController,

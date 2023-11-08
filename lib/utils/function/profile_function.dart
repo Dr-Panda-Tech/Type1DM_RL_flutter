@@ -54,12 +54,15 @@ class ProfileFunction {
     final docSnapshot = await FirebaseFirestore.instance
         .collection('primary_care')
         .doc(uid)
+        .collection('content')
+        .orderBy('timestamp', descending:true)
+        .limit(1)
         .get();
 
-    if (!docSnapshot.exists) return null;
+    if (!docSnapshot.docs.isEmpty) return null;
 
-    String? facilityType = docSnapshot.data()?['facility_type'] as String?;
-    String? facilityId = docSnapshot.data()?['facility_id'] as String?;
+    String? facilityType = docSnapshot.docs.first.data()['facility_type'] as String?;
+    String? facilityId = docSnapshot.docs.first.data()['facility_id'] as String?;
 
     if (facilityType == null || facilityId == null) return null;
 

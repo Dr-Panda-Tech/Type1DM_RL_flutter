@@ -127,7 +127,7 @@ class NewsDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(post['title']['rendered'] ?? ''),
+        title: Text(post['title']['rendered'] ?? '', style: kColorTextStyle,),
       ),
       body: SingleChildScrollView(
         child: Padding(
