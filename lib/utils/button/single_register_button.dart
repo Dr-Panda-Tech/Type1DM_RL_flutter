@@ -14,7 +14,7 @@ Widget singleRegisterButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.only(left: 20, right:35, top: 10, bottom: 10),
       textStyle: const TextStyle(fontSize: 16),
     ),
     child: Row(

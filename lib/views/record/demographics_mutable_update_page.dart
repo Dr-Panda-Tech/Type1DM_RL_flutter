@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
+import 'package:type1dm_rl_flutter/utils/button/single_register_button.dart';
 
 class DemographicsMutableUpdatePage extends StatefulWidget {
   const DemographicsMutableUpdatePage({super.key});
@@ -65,12 +65,8 @@ class _DemographicsMutableUpdatePage extends State<DemographicsMutableUpdatePage
                   decimal: 1, // 小数点以下2桁までを許容
                 ),
                 const SizedBox(height: 30),
-                twinButton(
-                  leftOnPressed: () async {
-                    Navigator.pop(context);
-                  },
-                  leftText: '戻る',
-                  rightOnPressed: () async {
+                singleRegisterButton(
+                  onPressed: () async {
                     if (heightController.text.isNotEmpty &&
                         weightController.text.isNotEmpty) {
                       await saveHeightWeightFirestore(
@@ -84,9 +80,12 @@ class _DemographicsMutableUpdatePage extends State<DemographicsMutableUpdatePage
                           content: Text('全ての情報を入力してください。'),
                         ),
                       );
+                      Navigator.pop(context);
                     }
                   },
-                  rightText: '更新する',
+                  text: '更新する',
+                  icon: Icons.update,
+                  color: ColorConstants.pandaBlack,
                 ),
                 const SizedBox(height: 150),
               ],
