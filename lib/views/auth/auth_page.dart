@@ -71,7 +71,7 @@ class _AuthPageState extends State<AuthPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min, // Columnのサイズを最小限にする
                   children: [
-                    buildButton(
+                    mainButton(
                       onPressed: _handleSignIn,
                       text: 'Sign in',
                       icon: Icons.login,

@@ -226,7 +226,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0, bottom: 20),
-                  child: buildButton(
+                  child: mainButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         if (passwordController.text.isEmpty) {
