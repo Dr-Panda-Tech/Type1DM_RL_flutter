@@ -29,19 +29,12 @@ class _InsulinUpdatePageState extends State<InsulinUpdatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
+      appBar: CustomAppBar(titleText: '使用するインスリンの更新'),
       body: Padding(
         padding: const EdgeInsets.all(36.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 50),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                '使用するインスリンを更新します',
-                style: kHeader2TextStyle,
-              ),
-            ),
             const SizedBox(height: 40),
             buildListSelectionWithIcon(
               context: context,

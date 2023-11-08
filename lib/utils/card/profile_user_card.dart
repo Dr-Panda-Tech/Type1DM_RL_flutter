@@ -1,10 +1,27 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/utils/function/profile_function.dart';
 
-class UserProfileCard extends StatelessWidget {
-  UserProfileCard({Key? key}) : super(key: key);
+import '../function/image_handler_function.dart';
+
+class UserProfileCard extends StatefulWidget {
+  UserProfileCard({super.key});
+
+  @override
+  _UserProfileCardState createState() => _UserProfileCardState();
+}
+
+class _UserProfileCardState extends State<UserProfileCard> {
+  XFile? _image;
+  void _handleImageSelection(ImageSource source) async {
+    final pickedImage = await pickImage(context, source);
+    setState(() {
+      _image = pickedImage;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,33 +36,44 @@ class UserProfileCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                // 2. FutureBuilderを使用して非同期に画像を取得し、取得が完了したら表示
-                FutureBuilder<String?>(
-                  future: profileFunc.getUserProfileImageUrl(user!.uid),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // データ読み込み中の場合、プレースホルダー画像を表示
-                      return CircleAvatar(
-                        radius: 40,
-                        backgroundImage: AssetImage('assets/images/dummy_user.png'),
-                      );
-                    } else if (snapshot.hasError) {
-                      // エラーが発生した場合、エラーアイコンを表示
-                      return CircleAvatar(
-                        radius: 40,
-                        child: Icon(Icons.error, color: Colors.red),
-                      );
-                    } else {
-                      // データの読み込みが完了した場合、取得した画像を表示
-                      String? imageUrl = snapshot.data;
-                      return CircleAvatar(
-                        radius: 40,
-                        backgroundImage: imageUrl != null
-                            ? NetworkImage(imageUrl)
-                            : AssetImage('assets/images/dummy_user.png') as ImageProvider,
-                      );
-                    }
-                  },
+                GestureDetector(
+                  onTap: () => showImageSourceActionSheet(context, _handleImageSelection),
+                  child: FutureBuilder<String?>(
+                    future: profileFunc.getUserProfileImageUrl(user!.uid),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<String?> snapshot) {
+                      Widget displayedImage;
+                      if (_image != null) {
+                        // 選択した画像があればそれを表示
+                        displayedImage = CircleAvatar(
+                          radius: 40,
+                          backgroundImage: FileImage(File(_image!.path)),
+                        );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        // データ読み込み中はデフォルト画像を表示
+                        displayedImage = CircleAvatar(
+                          radius: 40,
+                          backgroundImage:
+                              AssetImage('assets/images/dummy_user.png'),
+                        );
+                      } else if (snapshot.hasError || snapshot.data == null) {
+                        // エラーがあるか、データがnullの場合はエラーアイコンを表示
+                        displayedImage = CircleAvatar(
+                          radius: 40,
+                          backgroundImage:
+                              AssetImage('assets/images/dummy_user.png'),
+                        );
+                      } else {
+                        // データがある場合はFirebaseから取得した画像を表示
+                        displayedImage = CircleAvatar(
+                          radius: 40,
+                          backgroundImage: NetworkImage(snapshot.data!),
+                        );
+                      }
+                      return displayedImage;
+                    },
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Flexible(

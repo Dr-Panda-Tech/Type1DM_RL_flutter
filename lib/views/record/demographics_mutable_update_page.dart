@@ -31,6 +31,7 @@ class _DemographicsMutableUpdatePage extends State<DemographicsMutableUpdatePage
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
+      appBar: CustomAppBar(titleText: '身長・体重の更新'),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
         onTap: () => FocusScope.of(context).unfocus(),
@@ -40,14 +41,6 @@ class _DemographicsMutableUpdatePage extends State<DemographicsMutableUpdatePage
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 50),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '身長・体重を更新します',
-                    style: kHeader2TextStyle,
-                  ),
-                ),
                 const SizedBox(height: 40),
                 CustomFormWidgets.buildNumberFieldWithIcon(
                   context: context,
