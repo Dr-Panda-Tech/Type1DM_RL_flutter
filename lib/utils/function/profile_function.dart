@@ -50,20 +50,25 @@ class ProfileFunction {
   }
 
   Future<String?> getFacilityNameFromTypeAndId(String uid) async {
-    // Firestoreからfacility_typeとfacility_idを取得
-    final docSnapshot = await FirebaseFirestore.instance
+    // Firestoreから最新のtimestampを持つドキュメントを取得
+    final querySnapshot = await FirebaseFirestore.instance
         .collection('primary_care')
         .doc(uid)
         .collection('content')
-        .orderBy('timestamp', descending:true)
-        .limit(1)
+        .orderBy('timestamp', descending: true) // timestampで降順にソート
+        .limit(1) // 最初の1つのドキュメントのみを取得
         .get();
 
-    if (!docSnapshot.docs.isEmpty) return null;
+    // ドキュメントがない場合はnullを返す
+    if (querySnapshot.docs.isEmpty) return null;
 
-    String? facilityType = docSnapshot.docs.first.data()['facility_type'] as String?;
-    String? facilityId = docSnapshot.docs.first.data()['facility_id'] as String?;
+    // 最新のドキュメントを取得
+    final docSnapshot = querySnapshot.docs.first;
 
+    String? facilityType = docSnapshot.data()['facility_type'] as String?;
+    String? facilityId = docSnapshot.data()['facility_id'] as String?;
+
+    // facilityTypeまたはfacilityIdがnullの場合はnullを返す
     if (facilityType == null || facilityId == null) return null;
 
     // 対応するJSONファイル名を決定
@@ -87,9 +92,9 @@ class ProfileFunction {
       }
       if (facilityName != null) break;
     }
-
     return facilityName;
   }
+
 
   Future<void> changeName() async {
     TextEditingController nameController = TextEditingController();
