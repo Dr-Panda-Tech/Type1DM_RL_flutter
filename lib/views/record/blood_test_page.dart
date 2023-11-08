@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
 class BloodTestInputPage extends StatefulWidget {
   @override
@@ -8,21 +9,9 @@ class BloodTestInputPage extends StatefulWidget {
 
 class _BloodTestInputPageState extends State<BloodTestInputPage> {
 
-// 日付選択を行う部分
-  DateTime selectedDate = DateTime.now();
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2015, 8),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-      });
-  }
+  // 日付選択を行う部分
+  DateTime? testDate;
+  final ValueNotifier<DateTime?> testDateNotifier = ValueNotifier<DateTime?>(null);
 
 // 血液検査項目の入力フィールドを作成する関数
   Widget _buildTextFormField(String label,
@@ -55,6 +44,7 @@ class _BloodTestInputPageState extends State<BloodTestInputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstants.backgroundColor ,
       appBar: CustomAppBar(titleText: '血液検査結果の入力'),
       body: SingleChildScrollView(
         child: Padding(
@@ -63,12 +53,17 @@ class _BloodTestInputPageState extends State<BloodTestInputPage> {
             child: Column(
               children: [
                 // 日付選択
-                ListTile(
-                  title: Text(
-                      "Sample Collection Date: ${selectedDate.toLocal()}"
-                          .split(' ')[0]),
-                  trailing: Icon(Icons.calendar_today),
-                  onTap: () => _selectDate(context),
+                buildYearDateFieldWithIcon(
+                  context: context,
+                  label: "生年月日",
+                  icon: Icons.calendar_today,
+                  initialDate: DateTime(1980, 1, 1),
+                  onDateChanged: (value) {
+                    setState(() {
+                      testDate = value;
+                    });
+                  },
+                  selectedDateNotifier: testDateNotifier, // ここでValueNotifierを渡します
                 ),
                 Divider(),
                 // 各種検査項目
