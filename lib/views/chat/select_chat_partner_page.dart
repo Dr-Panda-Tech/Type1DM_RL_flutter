@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/views/chat/message_model.dart';
+import 'package:type1dm_rl_flutter/models/message_model.dart';
 import 'package:type1dm_rl_flutter/views/chat/chat_page.dart';
 
 class SelectChatPartnerPage extends StatelessWidget {

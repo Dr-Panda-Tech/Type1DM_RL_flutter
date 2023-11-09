@@ -1,4 +1,4 @@
-import 'package:type1dm_rl_flutter/views/chat/chat_user.dart';
+import 'package:type1dm_rl_flutter/utils/widget/chat_user.dart';
 
 class Message {
   final ChatUser sender;
