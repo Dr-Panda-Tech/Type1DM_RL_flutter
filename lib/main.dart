@@ -10,8 +10,13 @@ import 'package:type1dm_rl_flutter/views/auth/demographics_setting.dart';
 import 'package:type1dm_rl_flutter/views/auth/user_image_setting.dart';
 import 'package:type1dm_rl_flutter/views/auth/insulin_settings_page.dart';
 import 'package:type1dm_rl_flutter/views/auth/primary_care_setting_page.dart';
+
 import 'package:type1dm_rl_flutter/views/home/home_page.dart';
-import 'package:type1dm_rl_flutter/views/graph/graph_page.dart';
+import 'package:type1dm_rl_flutter/views/home/graph_page.dart';
+
+import 'package:type1dm_rl_flutter/views/chat/select_chat_partner_page.dart';
+import 'package:type1dm_rl_flutter/views/chat/chat_page.dart';
+
 import 'package:type1dm_rl_flutter/views/record/blood_test_page.dart';
 import 'package:type1dm_rl_flutter/views/record/record_page.dart';
 import 'package:type1dm_rl_flutter/views/record/insulin_update_page.dart';
@@ -73,6 +78,7 @@ class MyApp extends StatelessWidget {
         '/rootPage': (context) => const RootPage(),
         '/homePage': (context) => const HomePage(),
         '/graphPage': (context) => const GraphPage(),
+        '/selectChatPartnerPage': (context) => SelectChatPartnerPage(),
         '/recordPage': (context) => const RecordPage(),
         '/insulinUpdatePage': (context) => InsulinUpdatePage(),
         '/demographicsMutableUpdatePage': (context) => DemographicsMutableUpdatePage(),

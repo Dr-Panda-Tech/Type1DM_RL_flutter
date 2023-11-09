@@ -34,6 +34,15 @@ class _NewsPageState extends State<NewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
+      appBar: AppBar(
+        elevation: 2,
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          color: ColorConstants.pandaBlack,
+          onPressed: () {},
+        ),
+        title: Text('ニュース', style: kColorTextStyle,)
+      ),
       body: FutureBuilder<List<dynamic>>(
         future: posts,
         builder: (context, snapshot) {
@@ -127,7 +136,10 @@ class NewsDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(post['title']['rendered'] ?? '', style: kColorTextStyle,),
+        title: Text(
+          post['title']['rendered'] ?? '',
+          style: kColorTextStyle,
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
