@@ -5,6 +5,7 @@ import 'package:type1dm_rl_flutter/utils/button/main_button.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/services/auth_service.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
+import 'package:type1dm_rl_flutter/utils/function/qr_code_function.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -74,6 +75,7 @@ class _SignUpFormState extends State<SignUpForm> {
             confetti.fire();
             Future.delayed(Duration(seconds: 2), () {
               saveActivateUserFirestore();
+              generateAndUploadQRCode();
               Navigator.pushReplacementNamed(
                   context, '/demographicsSettingPage');
             });
@@ -226,7 +228,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0, bottom: 20),
-                  child: buildButton(
+                  child: mainButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         if (passwordController.text.isEmpty) {
@@ -311,3 +313,4 @@ class CustomPositioned extends StatelessWidget {
     );
   }
 }
+

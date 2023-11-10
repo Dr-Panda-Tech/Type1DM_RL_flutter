@@ -85,20 +85,11 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
               ),
               TextButton(
                 child: Text('登録する', style: kColorTextStyle),
-                onPressed: () async {
+                onPressed: () {
                   // ダイアログを閉じる
                   Navigator.of(context, rootNavigator: true).pop();
-                  // ローディングプロセスを開始
-                  if (!mounted) return;
-                  setState(() => isLoading = true);
-                  // 非同期操作を実行
-                  await savePrimaryCareFirestore(selectedFacilityId: selectedFacilityId!);
-                  // ウィジェットがまだマウントされているかをチェック
-                  if (!mounted) return;
-                  // ウィジェットがまだマウントされていれば新しいルートにナビゲート
-                  Navigator.of(context, rootNavigator: true).pushReplacementNamed('/rootPage');
-                  // ローディングプロセスを停止
-                  setState(() => isLoading = false);
+                  // 登録処理を開始
+                  _register();
                 },
               ),
             ],
@@ -111,6 +102,40 @@ class _PrimaryCareSettingsPageState extends State<PrimaryCareSettingsPage> {
           content: Text('全ての情報を入力してください。'),
         ),
       );
+    }
+  }
+
+  void _register() async {
+    if (selectedFacilityId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('施設が選択されていません。'),
+        ),
+      );
+      return;
+    }
+    try {
+      if (!mounted) return;
+      setState(() => isLoading = true);
+
+      await savePrimaryCareFirestore(
+        selectedType: selectedType!,
+        selectedFacilityId: selectedFacilityId!,
+      );
+
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pushReplacementNamed('/rootPage');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('登録に失敗しました。エラー: $e'),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 

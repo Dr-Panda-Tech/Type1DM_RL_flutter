@@ -13,7 +13,7 @@ Future<void> saveDemographicsImmutableFirestore({
     'uid' : uid,
     'timestamp': currentTime,
     'gender': gender,
-    'birthDate': birthDate,
+    'birth_date': birthDate,
   };
 
   await FirebaseFirestore.instance
@@ -63,6 +63,7 @@ Future<void> saveHeightWeightFirestore({
 }
 
 Future<void> savePrimaryCareFirestore({
+  required String selectedType, // 施設の一意のIDだけを引数として受け取る
   required String selectedFacilityId, // 施設の一意のIDだけを引数として受け取る
 }) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -71,6 +72,7 @@ Future<void> savePrimaryCareFirestore({
   final data = {
     'uid' : uid,
     'timestamp': currentTime,
+    'facility_type': selectedType, // IDだけを保存
     'facility_id': selectedFacilityId, // IDだけを保存
   };
 
@@ -117,7 +119,7 @@ Future<void> saveGlucoseInsulinToFirestore({
   final data = {
     'uid' : uid,
     'timestamp': currentTime,
-    'mealCategory': mealCategory,
+    'meal_category': mealCategory,
     'glucose': glucose,
     'recommendation': recommendationUnit,
   };
@@ -159,7 +161,7 @@ Future<void> saveActivateUserFirestore() async {
 
     final user_status = {
       'uid' : uid,
-      'activeStatusOn': currentTime,
+      'active_status_time': currentTime,
       'isActive': true,
     };
     await FirebaseFirestore.instance
@@ -193,7 +195,7 @@ Future<void> saveDeactivateUserFirestore({
 
   final user_status = {
     'uid' : uid,
-    'activeStatusOn': currentTime,
+    'active_status_time': currentTime,
     'isActive': false,
   };
 
@@ -207,4 +209,48 @@ Future<void> saveDeactivateUserFirestore({
     // ドキュメントが存在しない場合、setを使用して新しいドキュメントを作成
     await userDoc.reference.set(user_status);
   }
+}
+
+Future<void> saveBloodTestFirestore({
+  required DateTime? testDate,
+   double? sodium,
+   double? potassium,
+   double? chloride,
+   double? hb,
+   double? plt,
+   double? wbc,
+   double? ua,
+   double? bun,
+   double? cre,
+   double? egfr,
+   double? glucose,
+   double? hba1c,
+   double? cpeptide,
+
+}) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+
+  final data = {
+    'uid' : uid,
+    'test_date': testDate?.toIso8601String(), // DateTimeを文字列に変換します。
+    'sodium': sodium,
+    'potassium': potassium,
+    'chloride': chloride,
+    'hb': hb,
+    'plt': plt,
+    'wbc': wbc,
+    'ua': ua,
+    'bun': bun,
+    'cre': cre,
+    'egfr': egfr,
+    'glucose': glucose,
+    'hba1c': hba1c,
+    'cpeptide': cpeptide,
+  };
+
+  await FirebaseFirestore.instance
+      .collection('blood_test')
+      .doc(uid)
+      .collection('content')
+      .add(data);
 }

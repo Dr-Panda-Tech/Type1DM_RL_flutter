@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:type1dm_rl_flutter/views/home/home_page.dart';
 import 'package:type1dm_rl_flutter/views/record/record_page.dart';
-import 'package:type1dm_rl_flutter/views/graph/graph_page.dart';
+import 'package:type1dm_rl_flutter/views/chat/select_chat_partner_page.dart';
 import 'package:type1dm_rl_flutter/views/news/news_page.dart';
 import 'package:type1dm_rl_flutter/views/profile/profile_page.dart';
 
@@ -19,7 +19,7 @@ class _RootPageState extends State<RootPage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    GraphPage(),
+    SelectChatPartnerPage(),
     RecordPage(),
     NewsPage(),
     ProfilePage(),
@@ -44,27 +44,27 @@ class _RootPageState extends State<RootPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(fontSize: 9),
-        unselectedLabelStyle: TextStyle(fontSize: 9),
+        selectedLabelStyle: TextStyle(fontSize: 10),
+        unselectedLabelStyle: TextStyle(fontSize: 10),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, size: 25),
             label: 'ホーム',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: '血糖推移',
+            icon: Icon(Icons.chat, size: 25),
+            label: 'チャット',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.edit),
+            icon: Icon(Icons.edit, size: 25),
             label: '記録',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.article),
+            icon: Icon(Icons.article, size: 25),
             label: 'ニュース',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person, size: 25),
             label: 'プロフィール',
           ),
         ],

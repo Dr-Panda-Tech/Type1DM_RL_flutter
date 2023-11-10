@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 class ProfileFunction {
   final BuildContext context;
@@ -24,42 +26,99 @@ class ProfileFunction {
   }
 
   Future<String?> getUserProfileImageUrl(String uid) async {
-    try {
-      String imageUrl = await FirebaseStorage.instance
-          .ref('userImages/$uid.jpg') // 保存するときのパスを指定
-          .getDownloadURL();
-      return imageUrl;
-    } catch (e) {
-      return null; // 画像が存在しない場合はnullを返す
-    }
-  }
+    // 利用可能な拡張子のリスト
+    List<String> fileExtensions = ['.png', '.jpg', '.jpeg', '.JPEG', '.hex'];
 
-  Future<String?> getUserImageUrl(String uid) async {
+    // Firebase Storageの参照を取得
     FirebaseStorage storage = FirebaseStorage.instance;
 
-    // .jpg拡張子でのファイル参照を試みる
-    String jpgPath = 'userImages/$uid.jpg';
-    Reference jpgRef = storage.ref().child(jpgPath);
-
-    try {
-      String downloadURL = await jpgRef.getDownloadURL();
-      return downloadURL;
-    } catch (e) {
-      print("Error with .jpg: $e");
+    // 利用可能な拡張子を順番に試して、画像が見つかるかチェック
+    for (String extension in fileExtensions) {
+      try {
+        String imageUrl = await storage
+            .ref('userImages/$uid$extension') // ユーザーIDと拡張子を使ってパスを指定
+            .getDownloadURL();
+        // 画像のURLが見つかったら、すぐに返す
+        return imageUrl;
+      } catch (e) {
+        // 特定の拡張子の画像が存在しない場合は、キャッチして次の拡張子で試す
+        continue;
+      }
     }
-
-    // .jpgでの取得が失敗した場合、.png拡張子でのファイル参照を試みる
-    String pngPath = 'userImages/$uid.png';
-    Reference pngRef = storage.ref().child(pngPath);
-
-    try {
-      String downloadURL = await pngRef.getDownloadURL();
-      return downloadURL;
-    } catch (e) {
-      print("Error with .png: $e");
-      return null;
-    }
+    // どの拡張子にも一致する画像が見つからなかった場合はnullを返す
+    return null;
   }
+
+  Future<String?> getQRCodeImageUrl(String uid) async {
+    // 利用可能な拡張子のリスト
+    List<String> fileExtensions = ['.png', '.jpg', '.jpeg', '.JPEG', '.hex'];
+
+    // Firebase Storageの参照を取得
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    // 利用可能な拡張子を順番に試して、画像が見つかるかチェック
+    for (String extension in fileExtensions) {
+      try {
+        String imageUrl = await storage
+            .ref('qrCodes/$uid$extension') // ユーザーIDと拡張子を使ってパスを指定
+            .getDownloadURL();
+        // 画像のURLが見つかったら、すぐに返す
+        return imageUrl;
+      } catch (e) {
+        // 特定の拡張子の画像が存在しない場合は、キャッチして次の拡張子で試す
+        continue;
+      }
+    }
+    // どの拡張子にも一致する画像が見つからなかった場合はnullを返す
+    return null;
+  }
+
+  Future<String?> getFacilityNameFromTypeAndId(String uid) async {
+    // Firestoreから最新のtimestampを持つドキュメントを取得
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('primary_care')
+        .doc(uid)
+        .collection('content')
+        .orderBy('timestamp', descending: true) // timestampで降順にソート
+        .limit(1) // 最初の1つのドキュメントのみを取得
+        .get();
+
+    // ドキュメントがない場合はnullを返す
+    if (querySnapshot.docs.isEmpty) return null;
+
+    // 最新のドキュメントを取得
+    final docSnapshot = querySnapshot.docs.first;
+
+    String? facilityType = docSnapshot.data()['facility_type'] as String?;
+    String? facilityId = docSnapshot.data()['facility_id'] as String?;
+
+    // facilityTypeまたはfacilityIdがnullの場合はnullを返す
+    if (facilityType == null || facilityId == null) return null;
+
+    // 対応するJSONファイル名を決定
+    String jsonFile = facilityType == '病院' ? 'assets/json/hospitalMaster.json' : 'assets/json/clinicMaster.json';
+
+    // JSONファイルを読み込む
+    String jsonString = await rootBundle.loadString(jsonFile);
+    Map<String, dynamic> jsonMap = json.decode(jsonString);
+
+    // facility_idに一致する施設名を探す
+    String? facilityName;
+    for (var prefecture in jsonMap.entries) {
+      for (var city in prefecture.value.entries) {
+        for (var facility in city.value) {
+          if (facility['id'] == facilityId) {
+            facilityName = facility['name'];
+            break;
+          }
+        }
+        if (facilityName != null) break;
+      }
+      if (facilityName != null) break;
+    }
+    return facilityName;
+  }
+
 
   Future<void> changeName() async {
     TextEditingController nameController = TextEditingController();
@@ -191,10 +250,17 @@ class ProfileFunction {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
+        ImageProvider imageProvider;
+        if (qrImagePath.startsWith('http')) {
+          imageProvider = NetworkImage(qrImagePath);
+        } else {
+          imageProvider = AssetImage(qrImagePath);
+        }
+
         return AlertDialog(
           title: const Text('あなたのQRコード'),
           content: Image(
-            image: AssetImage(qrImagePath),
+            image: imageProvider,
             width: 200.0,
             height: 200.0,
           ),

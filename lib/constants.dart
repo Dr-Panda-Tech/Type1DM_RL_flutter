@@ -91,7 +91,7 @@ const kNumberTextStyle = TextStyle(
 );
 
 const kLargeButtonTextStyle = TextStyle(
-  fontSize:18.0,
+  fontSize:16.0,
   fontWeight: FontWeight.bold,
 );
 
@@ -184,7 +184,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: ColorConstants.backgroundColor,
-      elevation: 1.0,
+      elevation: 0.0,
       centerTitle: true,
       title: Text(
         titleText,
@@ -194,7 +194,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         preferredSize: const Size.fromHeight(1.0),
         child: Divider(
           height: 1,
-          color: Colors.grey,
+          color: ColorConstants.grey,
         ),
       ),
     );

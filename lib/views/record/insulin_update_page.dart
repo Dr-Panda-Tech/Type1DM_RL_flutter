@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
-import 'package:type1dm_rl_flutter/utils/button/twin_button.dart';
+import 'package:type1dm_rl_flutter/utils/button/single_register_button.dart';
 import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
@@ -35,7 +35,6 @@ class _InsulinUpdatePageState extends State<InsulinUpdatePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 40),
             buildListSelectionWithIcon(
               context: context,
               label: "食前投与するインスリン",
@@ -79,12 +78,8 @@ class _InsulinUpdatePageState extends State<InsulinUpdatePage> {
                 selectedValueNotifier: longActingInsulinTimingNotifier,
               ),
             const SizedBox(height: 30),
-            twinButton(
-              leftOnPressed: () async {
-                Navigator.pop(context);
-              },
-              leftText: '戻る',
-              rightOnPressed: () async {
+            singleRegisterButton(
+              onPressed: () async {
                 if (rapidInsulinType != null && longActingInsulinType != null) {
                   if (longActingInsulinType != '未使用' &&
                       longActingInsulinTiming == null) {
@@ -102,15 +97,11 @@ class _InsulinUpdatePageState extends State<InsulinUpdatePage> {
                     longActingInsulinTiming: longActingInsulinTiming,
                   );
                   Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('全ての情報を入力してください。'),
-                    ),
-                  );
                 }
               },
-              rightText: '更新する',
+              text: '更新する',
+              icon: Icons.update,
+              color: ColorConstants.pandaBlack,
             ),
           ],
         ),

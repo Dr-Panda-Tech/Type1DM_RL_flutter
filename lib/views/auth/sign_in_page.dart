@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:type1dm_rl_flutter/utils/form/sign_in_form.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
+import 'package:type1dm_rl_flutter/utils/function/auth_function.dart';
+import 'package:type1dm_rl_flutter/utils/form/sign_in_form.dart';
 
 Future<Object?> customSignInDialog(BuildContext context,
     {required ValueChanged onClosed}) {

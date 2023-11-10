@@ -41,12 +41,16 @@ class _ContactPageState extends State<ContactPage> {
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: "お名前",
                       hintStyle: kFormColorTextStyle,
                       filled: true,
-                      border: InputBorder.none,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none,
+                      ),
                       fillColor: ColorConstants.fieldGrey,
+
                     ),
                   ),
                 ),
@@ -67,11 +71,14 @@ class _ContactPageState extends State<ContactPage> {
                   child: TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     controller: _emailController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: "Email",
                       hintStyle: kFormColorTextStyle,
                       filled: true,
-                      border: InputBorder.none,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none,
+                      ),
                       fillColor: ColorConstants.fieldGrey,
                     ),
                   ),
@@ -95,11 +102,14 @@ class _ContactPageState extends State<ContactPage> {
                     controller: _messageController,
                     keyboardType: TextInputType.text,
                     maxLines: 4,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: "お問い合わせ内容",
                       hintStyle: kFormColorTextStyle,
                       filled: true,
-                      border: InputBorder.none,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none,
+                      ),
                       fillColor: ColorConstants.fieldGrey,
                     ),
                   ),

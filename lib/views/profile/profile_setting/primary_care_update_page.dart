@@ -7,12 +7,10 @@ import 'package:type1dm_rl_flutter/utils/function/save_firebase_function.dart';
 import 'package:type1dm_rl_flutter/utils/widget/input_field.dart';
 
 class PrimaryCareUpdatePage extends StatefulWidget {
-
   PrimaryCareUpdatePage({super.key});
 
   @override
-  _PrimaryCareUpdatePageState createState() =>
-      _PrimaryCareUpdatePageState();
+  _PrimaryCareUpdatePageState createState() => _PrimaryCareUpdatePageState();
 }
 
 class _PrimaryCareUpdatePageState extends State<PrimaryCareUpdatePage> {
@@ -21,13 +19,13 @@ class _PrimaryCareUpdatePageState extends State<PrimaryCareUpdatePage> {
   Map<String, dynamic>? hospitalMaster;
 
   final ValueNotifier<String?> selectedTypeNotifier =
-  ValueNotifier<String?>(null);
+      ValueNotifier<String?>(null);
   final ValueNotifier<String?> selectedPrefectureNotifier =
-  ValueNotifier<String?>(null);
+      ValueNotifier<String?>(null);
   final ValueNotifier<String?> selectedDistrictNotifier =
-  ValueNotifier<String?>(null);
+      ValueNotifier<String?>(null);
   final ValueNotifier<String?> selectedFacilityNotifier =
-  ValueNotifier<String?>(null);
+      ValueNotifier<String?>(null);
 
   String? selectedType = '病院';
   String? selectedPrefecture;
@@ -43,9 +41,9 @@ class _PrimaryCareUpdatePageState extends State<PrimaryCareUpdatePage> {
 
   void loadJsonData() async {
     String clinicData =
-    await rootBundle.loadString('assets/json/clinicMaster.json');
+        await rootBundle.loadString('assets/json/clinicMaster.json');
     String hospitalData =
-    await rootBundle.loadString('assets/json/hospitalMaster.json');
+        await rootBundle.loadString('assets/json/hospitalMaster.json');
 
     setState(() {
       clinicMaster = json.decode(clinicData);
@@ -95,10 +93,12 @@ class _PrimaryCareUpdatePageState extends State<PrimaryCareUpdatePage> {
                       isLoading = true;
                     });
                     await savePrimaryCareFirestore(
-                        selectedFacilityId: selectedFacilityId!);
+                      selectedType: selectedType!,
+                      selectedFacilityId: selectedFacilityId!,
+                    );
                     Future.delayed(
                       Duration(seconds: 2),
-                          () {
+                      () {
                         setState(() {
                           isLoading = false; // ローディング終了
                           Navigator.of(context).pop();
@@ -193,12 +193,12 @@ class _PrimaryCareUpdatePageState extends State<PrimaryCareUpdatePage> {
                     label: "施設名を選択",
                     icon: Icons.local_hospital,
                     options: getMasterData()[selectedPrefecture!]
-                    [selectedDistrict!]
+                            [selectedDistrict!]
                         .map<String>((e) => e["name"] as String)
                         .toList(),
                     onSelectionChanged: (value) {
                       var facilityData = getMasterData()[selectedPrefecture!]
-                      [selectedDistrict!]
+                              [selectedDistrict!]
                           .firstWhere((e) => e["name"] == value);
                       setState(() {
                         selectedFacility = value; // 選択された施設の名前を保存
