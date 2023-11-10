@@ -26,6 +26,15 @@ class _RecordPageState extends State<RecordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
+      appBar: RootAppBar(
+        leftOnPressed: () {
+          // 左のアイコンがタップされた時の処理
+        },
+        rightOnPressed: () {
+          // 右のアイコンがタップされた時の処理
+        },
+        titleText: Text('記録', style: kColorTextStyle,),
+      ),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
         onTap: () => FocusScope.of(context).unfocus(),
@@ -35,7 +44,6 @@ class _RecordPageState extends State<RecordPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                const SizedBox(height: 150),
                 customListTile(
                   leadingIcon: Icons.person,
                   titleText: '身長・体重を更新する',

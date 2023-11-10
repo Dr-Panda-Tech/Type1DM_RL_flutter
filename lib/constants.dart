@@ -6,7 +6,7 @@ class ColorConstants {
   static const Color pandaGreen = Color(0xFFBADCAD);
   static const Color pandaBlack = Color(0xFF3E3E3E);
   static const Color accentColor = Color(0xFF396122);
-  static const Color fieldGrey =  Color(0xFFE1E1E2);
+  static const Color fieldGrey = Color(0xFFE1E1E2);
   static const Color buttonMaterialColor = Color(0xFFF2F2F7);
   static const Color settingsListBackground = Color(0xFFF2F2F7);
   static const Color settingsSectionBackground = Colors.white;
@@ -30,7 +30,8 @@ ThemeData pandaTheme = ThemeData(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.white, backgroundColor: ColorConstants.accentColor,
+      foregroundColor: Colors.white,
+      backgroundColor: ColorConstants.accentColor,
     ),
   ),
   scaffoldBackgroundColor: const Color(0xFFFFFFFF),
@@ -51,7 +52,6 @@ final elevatedButtonStyle = ElevatedButton.styleFrom(
   foregroundColor: Colors.white,
   backgroundColor: ColorConstants.pandaBlack,
 );
-
 
 const KLogoTextStyle = TextStyle(
   fontSize: 60, // フォントサイズを20に変更
@@ -91,21 +91,21 @@ const kNumberTextStyle = TextStyle(
 );
 
 const kLargeButtonTextStyle = TextStyle(
-  fontSize:16.0,
+  fontSize: 16.0,
   fontWeight: FontWeight.bold,
 );
 
 const kMiniCardTextStyle = TextStyle(
-  fontSize:12.0,
+  fontSize: 12.0,
 );
 
 const kMediumCardTextStyle = TextStyle(
-  fontSize:14.0,
+  fontSize: 14.0,
 );
 
 const kSettingListTextStyle = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.bold,
+  fontSize: 14,
+  fontWeight: FontWeight.bold,
 );
 
 const kTitleTextStyle = TextStyle(
@@ -124,7 +124,7 @@ const kBodyTextStyle = TextStyle(
 );
 
 const kColorTextStyle = TextStyle(
-    color: ColorConstants.pandaBlack,
+  color: ColorConstants.pandaBlack,
 );
 
 const kFormColorTextStyle = TextStyle(
@@ -138,9 +138,9 @@ const kSendFormTextStyle = TextStyle(
 );
 
 const kHeader1TextStyle = TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: ColorConstants.pandaBlack,
+  fontSize: 24,
+  fontWeight: FontWeight.bold,
+  color: ColorConstants.pandaBlack,
 );
 
 const kHeader2TextStyle = TextStyle(
@@ -188,7 +188,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       title: Text(
         titleText,
-        style: kHeader1TextStyle.copyWith(fontSize: 18.0),
+        style: kColorTextStyle,
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0),
@@ -202,4 +202,72 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight + 1.0);
+}
+
+// class RootAppBar extends StatelessWidget implements PreferredSizeWidget {
+//   final String titleText;
+//
+//   RootAppBar({required this.titleText});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return AppBar(
+//       backgroundColor: ColorConstants.backgroundColor,
+//       elevation: 2.0,
+//       leading: IconButton(
+//         icon: Icon(Icons.menu),
+//         color: ColorConstants.pandaBlack,
+//         onPressed: () {},
+//       ),
+//       centerTitle: true,
+//       title: Text(
+//         titleText,
+//         style: kColorTextStyle,
+//       ),
+//         actions: <Widget>[
+//     IconButton(
+//     icon: Icon(Icons.search),
+//     color: ColorConstants.pandaBlack,
+//     onPressed: () {},
+//     ),
+//         ],
+//       ),
+//   }
+// }
+
+class RootAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback leftOnPressed;
+  final VoidCallback rightOnPressed;
+  final Text titleText;
+
+  RootAppBar({
+    required this.leftOnPressed,
+    required this.titleText,
+    required this.rightOnPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: ColorConstants.backgroundColor,
+      elevation: 2.0,
+      leading: IconButton(
+        icon: const Icon(Icons.menu),
+        color: ColorConstants.pandaBlack,
+        onPressed: leftOnPressed,
+      ),
+      centerTitle: true,
+      title: titleText,
+      actions: <Widget>[
+        IconButton(
+          icon: const Icon(Icons.search),
+          color: ColorConstants.pandaBlack,
+          onPressed: rightOnPressed,
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
