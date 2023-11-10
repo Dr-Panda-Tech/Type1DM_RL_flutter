@@ -22,6 +22,22 @@ class _UserProfileCardState extends State<UserProfileCard> {
     });
   }
 
+  void _showQRCode() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final profileFunc = ProfileFunction(context);
+
+    // QRコード画像のURLを取得
+    String? qrCodeImageUrl = await profileFunc.getQRCodeImageUrl(user!.uid);
+
+    if (qrCodeImageUrl != null) {
+      // URLがnullでない場合は、その画像を表示
+      profileFunc.showQRCode(qrCodeImageUrl);
+    } else {
+      // URLがnullの場合は、デフォルトのダミー画像を表示
+      profileFunc.showQRCode('assets/images/dummy_qr.jpg');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -54,14 +70,14 @@ class _UserProfileCardState extends State<UserProfileCard> {
                         displayedImage = CircleAvatar(
                           radius: 40,
                           backgroundImage:
-                              AssetImage('assets/images/dummy_user.png'),
+                          AssetImage('assets/images/dummy_user.png'),
                         );
                       } else if (snapshot.hasError || snapshot.data == null) {
                         // エラーがあるか、データがnullの場合はエラーアイコンを表示
                         displayedImage = CircleAvatar(
                           radius: 40,
                           backgroundImage:
-                              AssetImage('assets/images/dummy_user.png'),
+                          AssetImage('assets/images/dummy_user.png'),
                         );
                       } else {
                         // データがある場合はFirebaseから取得した画像を表示
@@ -144,8 +160,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.qr_code),
-                      onPressed: () =>
-                          profileFunc.showQRCode('assets/images/dummy_qr.jpg'),
+                      onPressed: _showQRCode,
                     ),
                     const Text('QRコード'),
                   ],

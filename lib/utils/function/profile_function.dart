@@ -49,6 +49,30 @@ class ProfileFunction {
     return null;
   }
 
+  Future<String?> getQRCodeImageUrl(String uid) async {
+    // 利用可能な拡張子のリスト
+    List<String> fileExtensions = ['.png', '.jpg', '.jpeg', '.JPEG', '.hex'];
+
+    // Firebase Storageの参照を取得
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    // 利用可能な拡張子を順番に試して、画像が見つかるかチェック
+    for (String extension in fileExtensions) {
+      try {
+        String imageUrl = await storage
+            .ref('qrCodes/$uid$extension') // ユーザーIDと拡張子を使ってパスを指定
+            .getDownloadURL();
+        // 画像のURLが見つかったら、すぐに返す
+        return imageUrl;
+      } catch (e) {
+        // 特定の拡張子の画像が存在しない場合は、キャッチして次の拡張子で試す
+        continue;
+      }
+    }
+    // どの拡張子にも一致する画像が見つからなかった場合はnullを返す
+    return null;
+  }
+
   Future<String?> getFacilityNameFromTypeAndId(String uid) async {
     // Firestoreから最新のtimestampを持つドキュメントを取得
     final querySnapshot = await FirebaseFirestore.instance
@@ -226,10 +250,17 @@ class ProfileFunction {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
+        ImageProvider imageProvider;
+        if (qrImagePath.startsWith('http')) {
+          imageProvider = NetworkImage(qrImagePath);
+        } else {
+          imageProvider = AssetImage(qrImagePath);
+        }
+
         return AlertDialog(
           title: const Text('あなたのQRコード'),
           content: Image(
-            image: AssetImage(qrImagePath),
+            image: imageProvider,
             width: 200.0,
             height: 200.0,
           ),
