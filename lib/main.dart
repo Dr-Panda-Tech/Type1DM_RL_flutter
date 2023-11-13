@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:type1dm_rl_flutter/constants.dart';
@@ -15,7 +16,6 @@ import 'package:type1dm_rl_flutter/views/home/home_page.dart';
 import 'package:type1dm_rl_flutter/views/home/graph_page.dart';
 
 import 'package:type1dm_rl_flutter/views/chat/select_chat_partner_page.dart';
-import 'package:type1dm_rl_flutter/views/chat/chat_page.dart';
 
 import 'package:type1dm_rl_flutter/views/record/blood_test_page.dart';
 import 'package:type1dm_rl_flutter/views/record/record_page.dart';
@@ -46,15 +46,17 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(child: MyApp()), // ProviderScopeを追加
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       theme: pandaTheme,
       locale: Locale('ja', 'JP'),

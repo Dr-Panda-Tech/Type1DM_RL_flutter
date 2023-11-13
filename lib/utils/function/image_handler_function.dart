@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:type1dm_rl_flutter/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,35 +17,72 @@ Future<XFile?> pickImage(BuildContext context, ImageSource source) async {
 
   if (pickedFile != null) {
     // Firebase Storageにアップロード
-    await uploadFile(context, pickedFile);
+    await uploadUserImage(context, pickedFile);
     return pickedFile;
   }
   return null;
 }
 
-Future<void> uploadFile(BuildContext context, XFile file) async {
+Future<void> uploadUserImage(BuildContext context, XFile file) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   final filePath = file.path;
   final extension = Path.extension(filePath).toLowerCase();
 
+  // ファイル形式の確認
   if (!['.png', '.jpg', '.jpeg', '.JPEG', '.hex'].contains(extension)) {
-    // 不正なファイル形式のエラーを表示
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('不正なファイル形式です。')),
     );
     return;
   }
 
-  File fileToUpload = File(filePath);
+  File originalFile = File(filePath);
+
+  // 画像を圧縮
+  File? compressedImage;
   try {
-    await FirebaseStorage.instance
-        .ref('userImages/$uid$extension')
-        .putFile(fileToUpload);
-    // 成功した場合の処理
+    compressedImage = (
+      await FlutterImageCompress.compressAndGetFile(
+        originalFile.absolute.path,
+        originalFile.absolute.path,
+        quality: 65, // 圧縮率
+      ),
+    ) as File?;
   } catch (e) {
-    // エラーを処理
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('画像のアップロードに失敗しました。')),
+      SnackBar(
+        content: Text('画像の圧縮に失敗しました。'),
+      ),
+    );
+    return;
+  }
+
+  if (compressedImage != null) {
+    try {
+      // 圧縮された画像をアップロード
+      await FirebaseStorage.instance
+          .ref('userImages/$uid$extension')
+          .putFile(compressedImage);
+
+      // 成功した場合の処理
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('画像がアップロードされました。'),
+        ),
+      );
+    } catch (e) {
+      // エラーを処理
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('画像のアップロードに失敗しました。'),
+        ),
+      );
+    }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('画像の圧縮に失敗しました。'),
+      ),
     );
   }
 }

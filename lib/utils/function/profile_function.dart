@@ -246,7 +246,26 @@ class ProfileFunction {
     return '$maskedNamePart@$domainPart';
   }
 
-  Future<void> showQRCode(String qrImagePath) async {
+  void showQRCode() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    if (uid == null) {
+      // ユーザーがログインしていない場合は処理を中断
+      return;
+    }
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+
+    String qrImagePath;
+    try {
+      qrImagePath = await storage
+          .ref('qrCodes/$uid.png') // ユーザーIDと拡張子を使ってパスを指定
+          .getDownloadURL();
+    } catch (e) {
+      // Firebase StorageからのURL取得に失敗した場合
+      qrImagePath = 'assets/images/dummy_qr.jpg';
+    }
+
     return showDialog(
       context: context,
       builder: (BuildContext context) {

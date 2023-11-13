@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 Future<Uint8List?> generateQRCode(String data) async {
+  // データからQRコードを生成する関数 //
   final qrValidationResult = QrValidator.validate(
     data: data,
     version: QrVersions.auto,
@@ -27,12 +28,14 @@ Future<Uint8List?> generateQRCode(String data) async {
 }
 
 Future<void> uploadQRCode(Uint8List qrCode, String uid) async {
+  // QRコードをStorageに保存する関数 //
   FirebaseStorage storage = FirebaseStorage.instance;
   Reference ref = storage.ref().child('qrCodes/$uid.png');
   await ref.putData(qrCode);
 }
 
 Future<void> generateAndUploadQRCode() async {
+  // generateQRCode,uploadQRCodeを一連の流れで利用する関数 //
   final user = await FirebaseAuth.instance.currentUser;
   if (user != null) {
     // ユーザーのUIDとメールアドレスを含むデータを生成
@@ -42,26 +45,8 @@ Future<void> generateAndUploadQRCode() async {
     if (qrCode != null) {
       // QRコードをFirebaseにアップロード
       await uploadQRCode(qrCode, user.uid);
-      // アップロード成功の通知
-      print('QR Code uploaded successfully!');
     }
   } else {
-    print('No user is signed in.');
-  }
-}
-
-Future<Uint8List?> getQRCode(String uid) async {
-  FirebaseStorage storage = FirebaseStorage.instance;
-  Reference ref = storage.ref().child('qrCodes/$uid.png');
-
-  try {
-    // Attempt to download data from Firebase Storage
-    final Uint8List? data = await ref.getData();
-    // If data is not null, return it
-    return data;
-  } catch (e) {
-    // If an error occurs, print it and return null
-    print('An error occurred while downloading the QR Code: $e');
-    return null;
+    throw Exception('No User Sign In!');
   }
 }
