@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter_riverpod:
   flutter:
     sdk: flutter
   flutter_localizations: # 追加
@@ -57,6 +58,7 @@ dependencies:
   keyboard_actions: ^4.2.0
   fluttertoast: ^8.2.2
   permission_handler: ^11.0.1
+  flutter_image_compress: ^2.1.0
 
 flutter_launcher_icons:
   android: true

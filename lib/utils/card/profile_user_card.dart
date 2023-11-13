@@ -15,6 +15,15 @@ class UserProfileCard extends StatefulWidget {
 
 class _UserProfileCardState extends State<UserProfileCard> {
   XFile? _image;
+  final user = FirebaseAuth.instance.currentUser;
+  late ProfileFunction profileFunc;
+
+  @override
+  void initState() {
+    super.initState();
+    profileFunc = ProfileFunction(context);
+  }
+
   void _handleImageSelection(ImageSource source) async {
     final pickedImage = await pickImage(context, source);
     setState(() {
@@ -22,26 +31,8 @@ class _UserProfileCardState extends State<UserProfileCard> {
     });
   }
 
-  void _showQRCode() async {
-    final user = FirebaseAuth.instance.currentUser;
-    final profileFunc = ProfileFunction(context);
-
-    // QRコード画像のURLを取得
-    String? qrCodeImageUrl = await profileFunc.getQRCodeImageUrl(user!.uid);
-
-    if (qrCodeImageUrl != null) {
-      // URLがnullでない場合は、その画像を表示
-      profileFunc.showQRCode(qrCodeImageUrl);
-    } else {
-      // URLがnullの場合は、デフォルトのダミー画像を表示
-      profileFunc.showQRCode('assets/images/dummy_qr.jpg');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final profileFunc = ProfileFunction(context);
     return Card(
       color: ColorConstants.pandaGreen,
       margin: const EdgeInsets.all(16),
@@ -100,7 +91,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                         style: kMiniCardTextStyle,
                       ), // ラベルのみの行
                       FutureBuilder<String?>(
-                        future: profileFunc.getUsername(user.uid),
+                        future: profileFunc.getUsername(user!.uid),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
@@ -118,7 +109,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                         style: kMiniCardTextStyle,
                       ), // ラベルのみの行ルのみの行
                       Text(
-                          '${profileFunc.maskEmail(user.email)}', // 実際のメールアドレスの行
+                          '${profileFunc.maskEmail(user!.email)}', // 実際のメールアドレスの行
                           style: kMediumCardTextStyle,
                           overflow: TextOverflow.ellipsis),
                       const SizedBox(height: 4),
@@ -127,7 +118,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                         style: kMiniCardTextStyle,
                       ), // ラベルのみの行ルのみの行
                       FutureBuilder<String?>(
-                        future: profileFunc.getFacilityNameFromTypeAndId(user.uid), // 非同期関数の呼び出し
+                        future: profileFunc.getFacilityNameFromTypeAndId(user!.uid), // 非同期関数の呼び出し
                         builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                           // 非同期操作がまだ終わっていない場合
                           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -160,7 +151,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.qr_code),
-                      onPressed: _showQRCode,
+                      onPressed: () => profileFunc.showQRCode,
                     ),
                     const Text('QRコード'),
                   ],
